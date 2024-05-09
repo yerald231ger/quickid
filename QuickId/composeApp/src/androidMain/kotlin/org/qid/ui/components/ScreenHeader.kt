@@ -27,7 +27,7 @@ fun ScreenHeader(
 ) {
     Box(
         modifier = Modifier
-            .height(64.dp)
+            .height(54.dp)
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
     ) {
@@ -36,7 +36,7 @@ fun ScreenHeader(
             style = MaterialTheme.typography.titleLarge,
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .padding(start = 4.dp)
+                .padding(start = 16.dp),
         )
         IconButton(
             modifier = Modifier
