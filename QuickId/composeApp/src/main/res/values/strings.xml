@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="what_are_we_searching_for">What are we searching for?</string>
+    <string name="hello">Hello</string>
+    <string name="driver_license">Driver License</string>
+    <string name="quick_access_files">Quick access files</string>
+</resources>
