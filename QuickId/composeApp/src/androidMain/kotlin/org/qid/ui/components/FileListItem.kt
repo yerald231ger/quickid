@@ -1,7 +1,6 @@
 package org.qid.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -72,7 +71,7 @@ fun FileListItem(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier
-                            .align(Alignment.CenterStart)
+                            .align(Alignment.BottomStart)
                             .padding(bottom = 15.dp, start = 1.dp)
                     )
                     IconButton(

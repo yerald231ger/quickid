@@ -2,6 +2,7 @@ package org.qid.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -25,47 +26,49 @@ fun ScreenHeader(
     onClickSearch: () -> Unit = {},
     onClickMore: () -> Unit = {}
 ) {
-    Box(
-        modifier = Modifier
-            .height(54.dp)
-            .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
-    ) {
-        Text(
-            text = screenTitle,
-            style = MaterialTheme.typography.titleLarge,
+    Row {
+        Box(
             modifier = Modifier
-                .align(Alignment.CenterStart)
-                .padding(start = 16.dp),
-        )
-        IconButton(
-            modifier = Modifier
-                .align(Alignment.CenterEnd)
-                .padding(end = 42.dp),
-            onClick = {
-                onClickSearch()
-            },
-            content = {
-                Icon(
-                    Icons.Default.Search,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = "More Options"
-                )
-            }
-        )
-        IconButton(
-            modifier = Modifier
-                .align(Alignment.CenterEnd),
-            onClick = {
-                onClickMore()
-            },
-            content = {
-                Icon(
-                    Icons.Default.MoreVert,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = "More Options"
-                )
-            }
-        )
+                .height(54.dp)
+                .fillMaxWidth()
+                .background(MaterialTheme.colorScheme.surface)
+        ) {
+            Text(
+                text = screenTitle,
+                style = MaterialTheme.typography.titleLarge,
+                modifier = Modifier
+                    .align(Alignment.CenterStart)
+                    .padding(start = 16.dp),
+            )
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(end = 42.dp),
+                onClick = {
+                    onClickSearch()
+                },
+                content = {
+                    Icon(
+                        Icons.Default.Search,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        contentDescription = "More Options"
+                    )
+                }
+            )
+            IconButton(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd),
+                onClick = {
+                    onClickMore()
+                },
+                content = {
+                    Icon(
+                        Icons.Default.MoreVert,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                        contentDescription = "More Options"
+                    )
+                }
+            )
+        }
     }
 }
