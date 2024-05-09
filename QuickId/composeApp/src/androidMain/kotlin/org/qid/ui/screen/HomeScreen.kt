@@ -1,5 +1,6 @@
 package org.qid.ui.screen
 
+import android.provider.MediaStore
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,6 +33,7 @@ import core.infrastructure.FileRepository
 import infrastructure.MockFileRepository
 import org.qid.R
 import org.qid.ui.components.FileItem
+import org.qid.ui.components.TitleContainer
 import org.qid.ui.navigation.AppScreens
 
 @Composable
@@ -46,10 +48,10 @@ fun HomeScreen(navController: NavController) {
             HelloSection(onClickSearch = {
                 navController.navigate(AppScreens.IdentityFilesScreen.route)
             })
-            QuickIdentityFilesSection(fileRepository.getTopFiles(),
-                onClickEdit = {
-                    navController.navigate(AppScreens.IdentityFilesScreen.route)
-                })
+            QuickIdentityFilesSection(fileRepository.getTopFiles(), onClickEdit = {
+                navController.navigate(AppScreens.IdentityFilesScreen.route)
+            })
+            ImportIdentityFileSection()
         }
     }
 }
@@ -101,48 +103,37 @@ fun HelloSection(
 }
 
 @Composable
+fun ImportIdentityFileSection() {
+    Row(
+        modifier = Modifier.fillMaxWidth().padding(15.dp)
+    ) {
+        TitleContainer(
+            title = stringResource(R.string.import_identity_file),
+            label = ""
+        ) {
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+
+            }
+        }
+    }
+}
+
+@Composable
 fun QuickIdentityFilesSection(files: List<core.models.IdentityFile>, onClickEdit: () -> Unit) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(15.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(160.dp)
+        TitleContainer(
+            title = stringResource(R.string.quick_access_files),
+            label = "+ Add"
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(40.dp)
-                    .align(Alignment.TopStart),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    text = stringResource(R.string.quick_access_files),
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.align(Alignment.CenterStart)
-                )
-                IconButton(
-                    modifier = Modifier.align(Alignment.CenterEnd),
-                    onClick = {
-                        onClickEdit()
-                    },
-                    content = {
-                        Icon(
-                            Icons.Rounded.Edit,
-                            tint = MaterialTheme.colorScheme.onSurface,
-                            contentDescription = "Modify list",
-                            modifier = Modifier
-                                .size(24.dp)
-                        )
-                    }
-                )
-            }
             LazyRow(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.BottomEnd),
+                    .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(files) { _, file ->

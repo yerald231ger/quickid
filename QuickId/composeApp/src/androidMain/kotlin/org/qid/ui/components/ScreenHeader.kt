@@ -43,7 +43,7 @@ fun ScreenHeader(
             IconButton(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
-                    .padding(end = 42.dp),
+                    .padding(end = 32.dp),
                 onClick = {
                     onClickSearch()
                 },

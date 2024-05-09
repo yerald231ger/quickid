@@ -13,8 +13,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.vectorResource
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
@@ -22,7 +20,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import org.qid.BottomBarItem
-import org.qid.R
+import org.qid.ui.icons.Description
 import org.qid.ui.screen.HomeScreen
 import org.qid.ui.screen.IdentityFilesScreen
 import org.qid.ui.screen.SettingsScreen
@@ -41,8 +39,8 @@ fun AppNavigation() {
         BottomBarItem(
             AppScreens.IdentityFilesScreen.route,
             "Files",
-            ImageVector.vectorResource(R.drawable.ic_inventory),
-            ImageVector.vectorResource(R.drawable.ic_inventory),
+            Icons.Filled.Description,
+            Icons.Outlined.Description,
             false
         ),
         BottomBarItem(
