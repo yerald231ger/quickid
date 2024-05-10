@@ -4,5 +4,6 @@
     <string name="hello">Hola</string>
     <string name="driver_license">Licencia de conducir</string>
     <string name="quick_access_files">Acceso rápido</string>
-    <string name="import_identity_file">Importar</string>
+    <string name="import_identity_file">Importar </string>
+    <string name="recent_identity_file">Documentos recientes</string>
 </resources>

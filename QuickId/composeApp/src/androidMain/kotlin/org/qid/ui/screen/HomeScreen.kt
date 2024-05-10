@@ -1,6 +1,5 @@
 package org.qid.ui.screen
 
-import android.provider.MediaStore
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -13,36 +12,41 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import core.infrastructure.FileRepository
+import core.models.IdentityFile
 import infrastructure.MockFileRepository
 import org.qid.R
 import org.qid.ui.components.FileItem
 import org.qid.ui.components.TitleContainer
+import org.qid.ui.components.fileIconSelector
 import org.qid.ui.navigation.AppScreens
 
 @Composable
 fun HomeScreen(navController: NavController) {
     val fileRepository: FileRepository = MockFileRepository()
     Box(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.surface)
-            .fillMaxSize()
+        modifier = Modifier.background(MaterialTheme.colorScheme.surface).fillMaxSize()
     ) {
         Column {
             HelloSection(onClickSearch = {
@@ -51,7 +55,7 @@ fun HomeScreen(navController: NavController) {
             QuickIdentityFilesSection(fileRepository.getTopFiles(), onClickEdit = {
                 navController.navigate(AppScreens.IdentityFilesScreen.route)
             })
-            ImportIdentityFileSection()
+            RecentIdentityFileSection(fileRepository.getTopFiles())
         }
     }
 }
@@ -59,8 +63,7 @@ fun HomeScreen(navController: NavController) {
 @Preview
 @Composable
 fun HelloSection(
-    name: String = "Gerardo",
-    onClickSearch: () -> Unit = {}
+    name: String = "Gerardo", onClickSearch: () -> Unit = {}
 ) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(15.dp),
@@ -81,16 +84,11 @@ fun HelloSection(
         }
         Box(
             modifier = Modifier.border(
-                1.dp,
-                MaterialTheme.colorScheme.outline,
-                MaterialTheme.shapes.medium
-            )
-                .size(36.dp),
-            contentAlignment = Alignment.Center
+                1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium
+            ).size(36.dp), contentAlignment = Alignment.Center
         ) {
             Icon(
-                modifier = Modifier.size(16.dp)
-                    .clickable {
+                modifier = Modifier.size(16.dp).clickable {
                         onClickSearch()
                     },
                 painter = painterResource(R.drawable.ic_search),
@@ -103,20 +101,18 @@ fun HelloSection(
 }
 
 @Composable
-fun ImportIdentityFileSection() {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(15.dp)
-    ) {
+fun RecentIdentityFileSection(files: List<core.models.IdentityFile>, onClickEdit: () -> Unit = {}) {
+    Row {
         TitleContainer(
-            title = stringResource(R.string.import_identity_file),
-            label = ""
+            title = stringResource(R.string.import_identity_file), label = "- Clear"
         ) {
             LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-
+                itemsIndexed(files) { _, file ->
+                    FileItem(identityFile = file)
+                }
             }
         }
     }
@@ -124,16 +120,12 @@ fun ImportIdentityFileSection() {
 
 @Composable
 fun QuickIdentityFilesSection(files: List<core.models.IdentityFile>, onClickEdit: () -> Unit) {
-    Row(
-        modifier = Modifier.fillMaxWidth().padding(15.dp)
-    ) {
+    Row {
         TitleContainer(
-            title = stringResource(R.string.quick_access_files),
-            label = "+ Add"
+            title = stringResource(R.string.quick_access_files), label = "+ Add"
         ) {
             LazyRow(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(files) { _, file ->

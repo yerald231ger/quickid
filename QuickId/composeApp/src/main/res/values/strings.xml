@@ -3,6 +3,7 @@
     <string name="what_are_we_searching_for">What are we searching for?</string>
     <string name="hello">Hello</string>
     <string name="driver_license">Driver License</string>
-    <string name="quick_access_files">Quick access files</string>
-    <string name="import_identity_file">Import</string>
+    <string name="quick_access_files">Quick access documents</string>
+    <string name="import_identity_file">Import document</string>
+    <string name="recent_identity_file">Recent documents</string>
 </resources>

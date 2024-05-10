@@ -28,17 +28,21 @@ fun TitleContainer(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surface)
+            .padding(bottom = 8.dp)
     ) {
         Column {
-            Row {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 8.dp, end = 8.dp)
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.titleMedium,
+                        style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier
                             .align(Alignment.CenterStart)
                     )
@@ -57,9 +61,7 @@ fun TitleContainer(
 
                 }
             }
-            Row(
-                modifier = Modifier.padding(bottom = 8.dp)
-            ) {
+            Row {
                 content()
             }
         }
