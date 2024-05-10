@@ -9,27 +9,18 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -39,7 +30,6 @@ import infrastructure.MockFileRepository
 import org.qid.R
 import org.qid.ui.components.FileItem
 import org.qid.ui.components.TitleContainer
-import org.qid.ui.components.fileIconSelector
 import org.qid.ui.navigation.AppScreens
 
 @Composable
@@ -101,7 +91,7 @@ fun HelloSection(
 }
 
 @Composable
-fun RecentIdentityFileSection(files: List<core.models.IdentityFile>, onClickEdit: () -> Unit = {}) {
+fun RecentIdentityFileSection(files: List<IdentityFile>, onClickEdit: () -> Unit = {}) {
     Row {
         TitleContainer(
             title = stringResource(R.string.import_identity_file), label = "- Clear"
@@ -119,7 +109,7 @@ fun RecentIdentityFileSection(files: List<core.models.IdentityFile>, onClickEdit
 }
 
 @Composable
-fun QuickIdentityFilesSection(files: List<core.models.IdentityFile>, onClickEdit: () -> Unit) {
+fun QuickIdentityFilesSection(files: List<IdentityFile>, onClickEdit: () -> Unit) {
     Row {
         TitleContainer(
             title = stringResource(R.string.quick_access_files), label = "+ Add"

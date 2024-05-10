@@ -21,22 +21,6 @@ val manrope = FontFamily(
 )
 
 
-// Set of Material typography styles to start with
-//val displayLarge: TextStyle = TypographyTokens.DisplayLarge,
-//val displayMedium: TextStyle = TypographyTokens.DisplayMedium,
-//val displaySmall: TextStyle = TypographyTokens.DisplaySmall,
-//val headlineLarge: TextStyle = TypographyTokens.HeadlineLarge,
-//val headlineMedium: TextStyle = TypographyTokens.HeadlineMedium,
-//val headlineSmall: TextStyle = TypographyTokens.HeadlineSmall,
-//val titleLarge: TextStyle = TypographyTokens.TitleLarge,
-//val titleMedium: TextStyle = TypographyTokens.TitleMedium,
-//val titleSmall: TextStyle = TypographyTokens.TitleSmall,
-//val bodyLarge: TextStyle = TypographyTokens.BodyLarge,
-//val bodyMedium: TextStyle = TypographyTokens.BodyMedium,
-//val bodySmall: TextStyle = TypographyTokens.BodySmall,
-//val labelLarge: TextStyle = TypographyTokens.LabelLarge,
-//val labelMedium: TextStyle = TypographyTokens.LabelMedium,
-//val labelSmall: TextStyle = TypographyTokens.LabelSmall,
 val Typography = Typography(
     displayLarge = TextStyle(fontFamily = manrope, fontSize = 57.sp),
     displayMedium = TextStyle(fontFamily = manrope, fontSize = 45.sp),
