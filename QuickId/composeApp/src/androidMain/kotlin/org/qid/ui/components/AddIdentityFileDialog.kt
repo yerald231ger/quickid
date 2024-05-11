@@ -1,4 +1,10 @@
+import android.net.Uri
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,8 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import org.qid.ui.icons.DocumentScanner
-import org.qid.ui.icons.Storage
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -21,6 +25,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,11 +36,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import org.qid.ui.icons.DocumentScanner
 import org.qid.ui.icons.PhotoLibrary
+import org.qid.ui.icons.Storage
 
 @Preview
 @Composable
 fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
+
+    var imageUri by remember { mutableStateOf<Uri?>(null) }
+    val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.PickVisualMedia()
+    ) { imageUri = it }
+
+    var fileUri by remember { mutableStateOf<Uri?>(null) }
+    val singleFilePickerLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument()
+    ) { fileUri = it }
+
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
             modifier = Modifier.fillMaxWidth().height(400.dp),
@@ -61,11 +82,37 @@ fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
                     Column {
                         val sources = listOf(
                             "Scan" to Icons.Default.DocumentScanner,
-                            "Gallery" to Icons.Default.PhotoLibrary,
-                            "File Manager" to Icons.Default.Storage)
+                            "Photo Gallery" to Icons.Default.PhotoLibrary,
+                            "File Manager" to Icons.Default.Storage
+                        )
                         sources.forEach { source ->
                             Row(
-                                modifier = Modifier.height(57.dp).fillMaxWidth(),
+                                modifier = Modifier
+                                    .height(57.dp)
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        when (source.first) {
+                                            "Scan" -> {
+                                                Log.d("AddIdentityFileDialog", "Scan")
+                                            }
+
+                                            "Photo Gallery" -> {
+                                                singlePhotoPickerLauncher.launch(
+                                                    PickVisualMediaRequest()
+                                                )
+                                            }
+
+                                            "File Manager" -> {
+                                                singleFilePickerLauncher.launch(
+                                                    arrayOf(
+                                                        "application/pdf",
+                                                        "application/msword",
+                                                        "text/plain",
+                                                    )
+                                                )
+                                            }
+                                        }
+                                    },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Box(
