@@ -21,6 +21,8 @@ kotlin {
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.navigation.compose)
             implementation(libs.androidx.material3.android)
+            implementation(libs.play.services.mlkit.document.scanner)
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
