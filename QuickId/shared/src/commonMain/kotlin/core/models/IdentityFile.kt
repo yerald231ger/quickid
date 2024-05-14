@@ -9,5 +9,9 @@ class IdentityFile(val name: String) {
     var size: Array<Byte> = emptyArray()
     var tags: List<String> = emptyList()
 
-
+    companion object {
+        fun createNameForImageFile(dateFormatted: String): String {
+            return "qid.image.${dateFormatted}"
+        }
+    }
 }

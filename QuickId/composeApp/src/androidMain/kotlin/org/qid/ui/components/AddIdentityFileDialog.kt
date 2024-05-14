@@ -5,7 +5,9 @@ import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.OpenDocument
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,14 +48,19 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.RESULT_
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER_MODE_FULL
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
+import core.models.IdentityFile
 import org.qid.ui.icons.DocumentScanner
 import org.qid.ui.icons.PhotoLibrary
 import org.qid.ui.icons.Storage
+import java.io.File
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @Preview
 @Composable
 fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
 
+    val context = LocalContext.current
     val options =
         GmsDocumentScannerOptions.Builder()
             .setPageLimit(3)
@@ -64,22 +71,33 @@ fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
 
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.PickVisualMedia()
-    ) { imageUri = it }
+        PickVisualMedia()
+    ) { uri ->
+
+        val inputStream = uri?.let { context.contentResolver.openInputStream(it) }
+        val dateNow = LocalDateTime.now()
+
+        @Suppress("SpellCheckingInspection")
+        val dateNowFormatted = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(dateNow)
+        val file = File(context.filesDir, IdentityFile.createNameForImageFile(dateNowFormatted))
+        val outputStream = file.outputStream()
+        inputStream?.copyTo(outputStream)
+        inputStream?.close()
+        outputStream.close()
+    }
 
     var fileUri by remember { mutableStateOf<Uri?>(null) }
     val singleFilePickerLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.OpenDocument()
+        OpenDocument()
     ) { fileUri = it }
 
-    val context = LocalContext.current
     val scanner = GmsDocumentScanning.getClient(options)
     var scannedDocumentUri by remember { mutableStateOf<List<Uri>>(emptyList()) }
     val scanDocumentLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { activityResult ->
+        rememberLauncherForActivityResult(StartIntentSenderForResult()) { activityResult ->
             if (activityResult.resultCode == RESULT_OK) {
                 val result = GmsDocumentScanningResult.fromActivityResultIntent(activityResult.data)
-                scannedDocumentUri = result?.pages?.map{ it.imageUri }  ?: emptyList()
+                scannedDocumentUri = result?.pages?.map { it.imageUri } ?: emptyList()
                 result?.pdf?.let { pdf ->
                     val pdfUri = pdf.uri
                     val pageCount = pdf.pageCount
@@ -125,7 +143,11 @@ fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
                                         "Scan" -> {
                                             scanner.getStartScanIntent(context as Activity)
                                                 .addOnSuccessListener {
-                                                    scanDocumentLauncher.launch(IntentSenderRequest.Builder(it).build())
+                                                    scanDocumentLauncher.launch(
+                                                        IntentSenderRequest.Builder(
+                                                            it
+                                                        ).build()
+                                                    )
                                                 }
                                                 .addOnFailureListener {
                                                     Toast.makeText(
