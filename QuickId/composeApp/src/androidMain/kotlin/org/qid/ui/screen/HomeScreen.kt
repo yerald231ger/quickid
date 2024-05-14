@@ -1,6 +1,5 @@
 package org.qid.ui.screen
 
-import AddIdentityFileDialog
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -33,6 +32,7 @@ import core.infrastructure.FileRepository
 import core.models.IdentityFile
 import infrastructure.MockFileRepository
 import org.qid.R
+import org.qid.ui.components.AddIdentityFileDialog
 import org.qid.ui.components.FileItem
 import org.qid.ui.components.TitleContainer
 

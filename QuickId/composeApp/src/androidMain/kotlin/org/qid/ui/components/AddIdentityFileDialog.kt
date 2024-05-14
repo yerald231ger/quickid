@@ -1,6 +1,10 @@
+package org.qid.ui.components
+
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.net.Uri
+import android.util.Log
+import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.IntentSenderRequest
@@ -39,7 +43,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions
@@ -56,7 +59,6 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-@Preview
 @Composable
 fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
 
@@ -69,27 +71,52 @@ fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
             .setResultFormats(RESULT_FORMAT_JPEG, RESULT_FORMAT_PDF)
             .build()
 
+    for (file in context.filesDir.listFiles()!!) {
+        Log.d("Files", "FileName: ${file.name}")
+    }
+
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         PickVisualMedia()
-    ) { uri ->
-
-        val inputStream = uri?.let { context.contentResolver.openInputStream(it) }
+    ) {
+        imageUri = it
         val dateNow = LocalDateTime.now()
 
         @Suppress("SpellCheckingInspection")
         val dateNowFormatted = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(dateNow)
-        val file = File(context.filesDir, IdentityFile.createNameForImageFile(dateNowFormatted))
-        val outputStream = file.outputStream()
-        inputStream?.copyTo(outputStream)
-        inputStream?.close()
-        outputStream.close()
+        val fileOutputStream = File(
+            context.filesDir,
+            IdentityFile.createNameForImageFile(dateNowFormatted, "jpg")
+        ).outputStream()
+        it?.let {
+            context.contentResolver.openInputStream(it).use { inputStream ->
+                inputStream?.copyTo(fileOutputStream)
+            }
+        }
     }
 
     var fileUri by remember { mutableStateOf<Uri?>(null) }
     val singleFilePickerLauncher = rememberLauncherForActivityResult(
         OpenDocument()
-    ) { fileUri = it }
+    ) {
+        fileUri = it
+        val dateNow = LocalDateTime.now()
+
+        @Suppress("SpellCheckingInspection")
+        val dateNowFormatted = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(dateNow)
+
+        val mimeType = context.contentResolver.getType(it!!)
+        val fileExtension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
+        val fileOutputStream = File(
+            context.filesDir,
+            IdentityFile.createNameForDocumentFile(dateNowFormatted, fileExtension!!)
+        ).outputStream()
+        it.let { it1 ->
+            context.contentResolver.openInputStream(it1)?.use { inputStream ->
+                inputStream.copyTo(fileOutputStream)
+            }
+        }
+    }
 
     val scanner = GmsDocumentScanning.getClient(options)
     var scannedDocumentUri by remember { mutableStateOf<List<Uri>>(emptyList()) }
@@ -99,8 +126,19 @@ fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
                 val result = GmsDocumentScanningResult.fromActivityResultIntent(activityResult.data)
                 scannedDocumentUri = result?.pages?.map { it.imageUri } ?: emptyList()
                 result?.pdf?.let { pdf ->
-                    val pdfUri = pdf.uri
-                    val pageCount = pdf.pageCount
+
+                    val dateNow = LocalDateTime.now()
+
+                    @Suppress("SpellCheckingInspection")
+                    val dateNowFormatted =
+                        DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(dateNow)
+                    val fileOutputStream = File(
+                        context.filesDir,
+                        IdentityFile.createNameForScannedFile(dateNowFormatted, "pdf")
+                    ).outputStream()
+                    context.contentResolver.openInputStream(pdf.uri).use {
+                        it?.copyTo(fileOutputStream)
+                    }
                 }
             }
         }
