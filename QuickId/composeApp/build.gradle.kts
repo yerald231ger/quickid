@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -22,7 +24,8 @@ kotlin {
             implementation(libs.navigation.compose)
             implementation(libs.androidx.material3.android)
             implementation(libs.play.services.mlkit.document.scanner)
-
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.sqlite.bundled)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -72,3 +75,6 @@ dependencies {
     implementation(libs.androidx.appcompat)
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}

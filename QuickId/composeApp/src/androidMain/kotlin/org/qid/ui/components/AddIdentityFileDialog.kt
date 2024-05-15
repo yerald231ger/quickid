@@ -71,49 +71,43 @@ fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
             .setResultFormats(RESULT_FORMAT_JPEG, RESULT_FORMAT_PDF)
             .build()
 
-    for (file in context.filesDir.listFiles()!!) {
-        Log.d("Files", "FileName: ${file.name}")
-    }
-
-    var imageUri by remember { mutableStateOf<Uri?>(null) }
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         PickVisualMedia()
     ) {
-        imageUri = it
-        val dateNow = LocalDateTime.now()
-
-        @Suppress("SpellCheckingInspection")
-        val dateNowFormatted = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(dateNow)
-        val fileOutputStream = File(
-            context.filesDir,
-            IdentityFile.createNameForImageFile(dateNowFormatted, "jpg")
-        ).outputStream()
         it?.let {
-            context.contentResolver.openInputStream(it).use { inputStream ->
-                inputStream?.copyTo(fileOutputStream)
+            val dateNow = LocalDateTime.now()
+            @Suppress("SpellCheckingInspection")
+            val dateNowFormatted = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(dateNow)
+            val fileOutputStream = File(
+                context.filesDir,
+                IdentityFile.createNameForImageFile(dateNowFormatted, "jpg")
+            ).outputStream()
+            it.let {
+                context.contentResolver.openInputStream(it).use { inputStream ->
+                    inputStream?.copyTo(fileOutputStream)
+                }
             }
         }
     }
 
-    var fileUri by remember { mutableStateOf<Uri?>(null) }
     val singleFilePickerLauncher = rememberLauncherForActivityResult(
         OpenDocument()
     ) {
-        fileUri = it
-        val dateNow = LocalDateTime.now()
+        it?.let {
+            val dateNow = LocalDateTime.now()
+            @Suppress("SpellCheckingInspection")
+            val dateNowFormatted = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(dateNow)
 
-        @Suppress("SpellCheckingInspection")
-        val dateNowFormatted = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(dateNow)
-
-        val mimeType = context.contentResolver.getType(it!!)
-        val fileExtension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
-        val fileOutputStream = File(
-            context.filesDir,
-            IdentityFile.createNameForDocumentFile(dateNowFormatted, fileExtension!!)
-        ).outputStream()
-        it.let { it1 ->
-            context.contentResolver.openInputStream(it1)?.use { inputStream ->
-                inputStream.copyTo(fileOutputStream)
+            val mimeType = context.contentResolver.getType(it)
+            val fileExtension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
+            val fileOutputStream = File(
+                context.filesDir,
+                IdentityFile.createNameForDocumentFile(dateNowFormatted, fileExtension!!)
+            ).outputStream()
+            it.let { it1 ->
+                context.contentResolver.openInputStream(it1)?.use { inputStream ->
+                    inputStream.copyTo(fileOutputStream)
+                }
             }
         }
     }
