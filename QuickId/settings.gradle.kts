@@ -30,4 +30,3 @@ dependencyResolutionManagement {
 
 include(":composeApp")
 include(":shared")
-include(":shared:mylibrary")

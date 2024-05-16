@@ -2,8 +2,6 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.room)
 }
 
 kotlin {
@@ -16,24 +14,9 @@ kotlin {
     }
 
     sourceSets {
-
         androidMain.dependencies {
-            implementation(libs.compose.ui.tooling.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.core.splashscreen)
-            implementation(libs.navigation.compose)
-            implementation(libs.androidx.material3.android)
-            implementation(libs.play.services.mlkit.document.scanner)
-            implementation(libs.androidx.room.runtime)
-            implementation(libs.sqlite.bundled)
         }
         commonMain.dependencies {
-            implementation(compose.runtime)
-            implementation(compose.foundation)
-            implementation(compose.ui)
-            implementation(compose.components.resources)
-            implementation(compose.components.uiToolingPreview)
-            implementation(projects.shared)
         }
     }
 }
@@ -53,6 +36,9 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+    buildFeatures {
+        compose = true
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -67,14 +53,25 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    }
     dependencies {
+        implementation(compose.runtime)
+        implementation(compose.foundation)
+        implementation(compose.ui)
+        implementation(compose.components.resources)
+        implementation(compose.components.uiToolingPreview)
+        implementation(projects.shared)
+        implementation(libs.compose.ui.tooling.preview)
+        implementation(libs.androidx.activity.compose)
+        implementation(libs.androidx.material3.android)
+        implementation(libs.androidx.core.splashscreen)
+        implementation(libs.navigation.compose)
+        implementation(libs.play.services.mlkit.document.scanner)
+        implementation(libs.androidx.appcompat)
+
         debugImplementation(libs.compose.ui.tooling)
     }
-}
-dependencies {
-    implementation(libs.androidx.appcompat)
-}
 
-room {
-    schemaDirectory("$projectDir/schemas")
 }
