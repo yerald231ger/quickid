@@ -65,12 +65,20 @@ class MockFileRepository : FileRepository {
         }
     }
 
-    override fun saveFile(identityFile: IdentityFile) {
-        identityFiles = listOf(identityFiles[0].plus(identityFile))
+    override suspend fun saveFile(identityFile: IdentityFile) {
+        TODO("Not yet implemented")
     }
 
-    override fun deleteFile(identityFile: IdentityFile) {
-        identityFiles = listOf(identityFiles[0].minus(identityFile))
+    override suspend fun deleteFile(identityFile: IdentityFile) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun countFiles(): Int {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun updateFile(identityFile: IdentityFile) {
+        TODO("Not yet implemented")
     }
 
 

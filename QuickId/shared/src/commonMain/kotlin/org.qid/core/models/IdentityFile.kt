@@ -13,6 +13,10 @@ class IdentityFile private constructor(val id: Long) {
     var tags: List<String> = emptyList()
     var path: String = ""
 
+    override fun toString(): String {
+        return "IdentityFile(id=$id, name='$name', description='$description', importance=$importance, identityFileType=$identityFileType, size=${size.contentToString()}, tags=${tags.size}, path='$path')"
+    }
+
     companion object {
         fun create(id: Long): IdentityFile {
             return IdentityFile(id)

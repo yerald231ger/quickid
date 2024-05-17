@@ -7,6 +7,8 @@ interface FileRepository {
     fun getTopFiles(): Flow<List<IdentityFile>>
     fun getRecentFiles(): Flow<List<IdentityFile>>
     fun getFiles(id: Long?): Flow<List<IdentityFile>>
-    fun saveFile(identityFile: IdentityFile)
-    fun deleteFile(identityFile: IdentityFile)
+    suspend fun saveFile(identityFile: IdentityFile)
+    suspend fun deleteFile(identityFile: IdentityFile)
+    suspend fun countFiles(): Int
+    suspend fun updateFile(identityFile: IdentityFile)
 }

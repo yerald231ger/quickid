@@ -45,11 +45,20 @@ class QuickIdFileRepository(
             }
     }
 
-    override fun saveFile(identityFile: IdentityFile) {
+    override suspend fun saveFile(identityFile: IdentityFile) {
         database.fileDao().insert(identityFile.toEntityFile())
     }
 
-    override fun deleteFile(identityFile: IdentityFile) {
+    override suspend fun deleteFile(identityFile: IdentityFile) {
         database.fileDao().delete(identityFile.toEntityFile())
     }
+
+    override suspend fun countFiles(): Int {
+        return database.fileDao().count()
+    }
+
+    override suspend fun updateFile(identityFile: IdentityFile) {
+        TODO("Not yet implemented")
+    }
+
 }

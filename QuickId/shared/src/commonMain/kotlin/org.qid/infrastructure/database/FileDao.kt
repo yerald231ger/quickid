@@ -10,23 +10,25 @@ import org.qid.infrastructure.entities.EntityFile
 
 @Dao
 interface FileDao {
-    @Insert
-    fun insert(file: EntityFile)
     @Query("SELECT * FROM entity_files")
     fun getAllAsFlow(): Flow<List<EntityFile>>
 
     @Query("SELECT COUNT(*) as count FROM entity_files")
-    fun count(): Int
+    suspend fun count(): Int
+
     @Query("SELECT * FROM entity_files WHERE id in (:id)")
-    fun findById(id: Long): EntityFile?
+    suspend fun findById(id: Long): EntityFile?
 
     @Query("SELECT * FROM entity_files WHERE name = :name")
-    fun findByName(name: String): EntityFile?
+    suspend fun findByName(name: String): EntityFile?
+
+    @Insert
+    suspend fun insert(file: EntityFile)
 
     @Delete
-    fun delete(file: EntityFile)
+    suspend fun delete(file: EntityFile)
 
     @Update
-    fun update(file: EntityFile)
+    suspend fun update(file: EntityFile)
 
 }
