@@ -18,13 +18,18 @@ package org.qid.di
 import android.content.Context
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.driver.bundled.BundledSQLiteDriver
+import kotlinx.coroutines.Dispatchers
 import org.qid.infrastructure.database.QuickIdDatabase
 import org.qid.infrastructure.database.dbFileName
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class QuickIdDatabaseFactory(private val ctx: Context) {
     actual fun createRoomDatabase(): QuickIdDatabase {
-        return getDatabaseBuilder(ctx).build()
+        return getDatabaseBuilder(ctx)
+            .setDriver(BundledSQLiteDriver())
+            .setQueryCoroutineContext(Dispatchers.IO)
+            .build()
     }
 }
 
