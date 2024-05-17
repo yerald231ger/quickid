@@ -11,8 +11,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import core.models.IdentityFile
-import infrastructure.MockFileRepository
+import org.qid.core.models.IdentityFile
+import org.qid.infrastructure.MockFileRepository
 import org.qid.ui.components.FileListItem
 import org.qid.ui.components.ScreenHeader
 

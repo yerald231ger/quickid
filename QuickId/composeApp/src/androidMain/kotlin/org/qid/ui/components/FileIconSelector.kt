@@ -3,7 +3,7 @@ package org.qid.ui.components
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import core.constants.IdentityFileType
+import org.qid.core.constants.IdentityFileType
 import org.qid.R
 
 @Composable

@@ -28,9 +28,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import core.infrastructure.FileRepository
-import core.models.IdentityFile
-import infrastructure.MockFileRepository
+import org.qid.core.infrastructure.FileRepository
+import org.qid.core.models.IdentityFile
+import org.qid.infrastructure.MockFileRepository
 import org.qid.R
 import org.qid.ui.components.AddIdentityFileDialog
 import org.qid.ui.components.FileItem

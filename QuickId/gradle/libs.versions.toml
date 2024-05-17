@@ -10,9 +10,12 @@ androidx-core-ktx = "1.13.1"
 androidx-espresso-core = "3.5.1"
 androidx-test-junit = "1.1.5"
 compose = "1.6.7"
+kotlinx-coroutines = "1.8.0"
+kotlinxDatetime = "0.6.0-RC.2"
 compose-plugin = "1.6.2"
 coreSplashscreen = "1.0.1"
 junit = "4.13.2"
+ktorVersion = "2.3.8"
 kotlin = "1.9.23"
 material3Android = "1.2.1"
 navigationCompose = "2.7.7"
@@ -20,6 +23,7 @@ playServicesMlkitDocumentScanner = "16.0.0-beta1"
 skie = "0.6.2"
 androidx-room = "2.7.0-alpha02"
 ksp = "1.9.23-1.0.19"
+sqlite = "2.5.0-SNAPSHOT"
 
 compose-compiler = "1.5.11"
 
@@ -40,6 +44,10 @@ androidx-material3-android = { group = "androidx.compose.material3", name = "mat
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 play-services-mlkit-document-scanner = { module = "com.google.android.gms:play-services-mlkit-document-scanner", version.ref = "playServicesMlkitDocumentScanner" }
 
+sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-datetime = { module = "org.jetbrains.kotlinx:kotlinx-datetime", version.ref = "kotlinxDatetime" }
+ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "androidx-room" }
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "androidx-room"}
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "androidx-room" }

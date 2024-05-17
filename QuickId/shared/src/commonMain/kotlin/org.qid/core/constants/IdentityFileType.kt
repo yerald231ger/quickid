@@ -1,4 +1,4 @@
-package core.constants
+package org.qid.core.constants
 
 enum class IdentityFileType {
     PASSPORT {

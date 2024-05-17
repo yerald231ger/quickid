@@ -3,7 +3,6 @@ package org.qid.ui.components
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.net.Uri
-import android.util.Log
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -51,7 +50,7 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.RESULT_
 import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER_MODE_FULL
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
-import core.models.IdentityFile
+import org.qid.core.models.IdentityFile
 import org.qid.ui.icons.DocumentScanner
 import org.qid.ui.icons.PhotoLibrary
 import org.qid.ui.icons.Storage

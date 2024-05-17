@@ -33,9 +33,14 @@ kotlin {
     sourceSets {
         commonMain.dependencies {
             // put your Multiplatform dependencies here
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.kotlinx.coroutines.core)
             implementation(libs.androidx.room.common)
             implementation(libs.androidx.room.runtime)
+            implementation(libs.sqlite.bundled)
         }
+
     }
 }
 
