@@ -15,21 +15,15 @@
  */
 package org.qid.di
 
-import android.app.Application
-import androidx.room.Room
-import androidx.sqlite.driver.bundled.BundledSQLiteDriver
-import kotlinx.coroutines.Dispatchers
+
+import kotlinx.serialization.json.Json
 import org.qid.infrastructure.database.QuickIdDatabase
-import org.qid.infrastructure.database.dbFileName
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
-actual class QuickIdDatabaseFactory(private val app: Application) {
-
-    actual fun createRoomDatabase(): QuickIdDatabase {
-        val dbFile = app.getDatabasePath(dbFileName)
-        return Room.databaseBuilder<QuickIdDatabase>(app, dbFile.absolutePath)
-            .setDriver(BundledSQLiteDriver())
-            .setQueryCoroutineContext(Dispatchers.IO)
-            .build()
-    }
+expect class QuickIdDatabaseFactory {
+    fun createRoomDatabase(): QuickIdDatabase
 }
+
+
+val json = Json { ignoreUnknownKeys = true }
+

@@ -9,8 +9,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 import org.qid.core.models.IdentityFile
 import org.qid.infrastructure.MockFileRepository
 import org.qid.ui.components.FileListItem
@@ -32,11 +35,16 @@ fun IdentityFilesScreen(navController: NavController) {
 }
 
 @Composable
-fun ListIdentityFilesSection(files: List<IdentityFile> = MockFileRepository().getTopFiles()) {
+fun ListIdentityFilesSection(files: Flow<List<IdentityFile>> = MockFileRepository().getTopFiles()) {
+    val coroutineScope = rememberCoroutineScope()
     Row {
         LazyColumn {
-            items(files) { file ->
-                FileListItem(identityFile = file)
+            coroutineScope.launch {
+                files.collect { items ->
+                    items(items) { file ->
+                        FileListItem(identityFile = file)
+                    }
+                }
             }
         }
     }

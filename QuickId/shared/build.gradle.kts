@@ -36,7 +36,6 @@ kotlin {
             implementation(libs.ktor.serialization.kotlinx.json)
             implementation(libs.kotlinx.datetime)
             implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.androidx.room.common)
             implementation(libs.androidx.room.runtime)
             implementation(libs.sqlite.bundled)
         }
@@ -45,7 +44,7 @@ kotlin {
 }
 
 android {
-    namespace = "org.qid.shared"
+    namespace = "org.qid.domain"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

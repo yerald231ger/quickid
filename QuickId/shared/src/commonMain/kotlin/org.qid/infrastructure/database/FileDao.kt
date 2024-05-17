@@ -5,8 +5,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
-import org.qid.infrastructure.entities.EntityFile
 import kotlinx.coroutines.flow.Flow
+import org.qid.infrastructure.entities.EntityFile
 
 @Dao
 interface FileDao {
@@ -28,4 +28,5 @@ interface FileDao {
 
     @Update
     fun update(file: EntityFile)
+
 }

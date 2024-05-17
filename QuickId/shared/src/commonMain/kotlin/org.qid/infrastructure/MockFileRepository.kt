@@ -1,58 +1,77 @@
 package org.qid.infrastructure
 
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.map
 import org.qid.core.constants.IdentityFileType
-import org.qid.core.models.IdentityFile
 import org.qid.core.infrastructure.FileRepository
+import org.qid.core.models.IdentityFile
 
 class MockFileRepository : FileRepository {
 
     private var identityFiles = listOf(
-        IdentityFile("Pasaporte").apply {
-            importance = 0
-            identityFileType = IdentityFileType.PASSPORT
-            tags = listOf("tag1", "tag2")
-        },
-        IdentityFile("Ine").apply {
-            importance = 0
-            tags = listOf("tag3", "tag4")
-        },
-        IdentityFile("Licencia de conducir").apply {
-            importance = 0
-            identityFileType = IdentityFileType.DRIVER_LICENSE
-            tags = listOf("tag5", "tag6")
-        },
-        IdentityFile("Acta de nacimiento").apply {
-            importance = 0
-            tags = listOf("tag7", "tag8")
-        },
-        IdentityFile("Comprobante de domicilio").apply {
-            importance = 0
-            tags = listOf("tag9", "tag10")
-        },
-        IdentityFile("Curp").apply {
-            importance = 0
-            tags = listOf("tag11", "tag12")
-        })
+        listOf(
+            IdentityFile.create(1).apply {
+                name = "Pasaporte"
+                importance = 0
+                identityFileType = IdentityFileType.PASSPORT
+                tags = listOf("tag1", "tag2")
+            },
+            IdentityFile.create(2).apply {
+                name = "Ine"
+                importance = 0
+                tags = listOf("tag3", "tag4")
+            },
+            IdentityFile.create(3).apply {
+                name = "Licencia de conducir"
+                importance = 0
+                identityFileType = IdentityFileType.DRIVER_LICENSE
+                tags = listOf("tag5", "tag6")
+            },
+            IdentityFile.create(4).apply {
+                name = "Acta de nacimiento"
+                importance = 0
+                tags = listOf("tag7", "tag8")
+            },
+            IdentityFile.create(5).apply {
+                name = "Comprobante de domicilio"
+                importance = 0
+                tags = listOf("tag9", "tag10")
+            },
+            IdentityFile.create(6).apply {
+                name = "Curp"
+                importance = 0
+                tags = listOf("tag11", "tag12")
+            })
+    )
 
-    override fun getTopFiles(): List<IdentityFile> {
-        return identityFiles.filter { it.importance == 0 }
+    val flow = identityFiles.asFlow()
+
+    override fun getTopFiles(): Flow<List<IdentityFile>> {
+        return flow
     }
 
-    override fun getRecentFiles(): List<IdentityFile> {
-        return identityFiles.filter { it.importance == 0 }
+    override fun getRecentFiles(): Flow<List<IdentityFile>> {
+        return flow
     }
 
-    override fun getFiles(id: Int?): List<IdentityFile> {
-        if (id == null) return identityFiles
+    override fun getFiles(id: Long?): Flow<List<IdentityFile>> {
+        if (id == null) return flow
 
-        return identityFiles.filter { it.importance == id }
+        return flow.map { files ->
+            files.filter {
+                it.id == id
+            }
+        }
     }
 
     override fun saveFile(identityFile: IdentityFile) {
-        TODO("Not yet implemented")
+        identityFiles = listOf(identityFiles[0].plus(identityFile))
     }
 
-    override fun deleteFile(name: String) {
-        TODO("Not yet implemented")
+    override fun deleteFile(identityFile: IdentityFile) {
+        identityFiles = listOf(identityFiles[0].minus(identityFile))
     }
+
+
 }

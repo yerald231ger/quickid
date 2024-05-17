@@ -3,8 +3,9 @@ package org.qid.core.models
 import org.qid.core.constants.IdentityFileType
 
 
-class IdentityFile(val name: String) {
-    val id: Long = 0
+class IdentityFile private constructor(val id: Long) {
+
+    var name: String = ""
     var description: String = ""
     var importance: Int = 0
     var identityFileType: IdentityFileType = IdentityFileType.ID
@@ -13,6 +14,10 @@ class IdentityFile(val name: String) {
     var path: String = ""
 
     companion object {
+        fun create(id: Long): IdentityFile {
+            return IdentityFile(id)
+        }
+
         fun createNameForImageFile(dateFormatted: String, fileExtension: String): String {
             return "qid.image.${dateFormatted}.${fileExtension}"
         }

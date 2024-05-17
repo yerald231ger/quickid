@@ -27,7 +27,7 @@ import java.util.UUID
 @Preview
 @Composable
 fun FileListItem(
-    identityFile: IdentityFile = IdentityFile("Driver License"),
+    identityFile: IdentityFile = IdentityFile.create(2),
     onClickMore: () -> Unit = {}
 ) {
     UUID.randomUUID()

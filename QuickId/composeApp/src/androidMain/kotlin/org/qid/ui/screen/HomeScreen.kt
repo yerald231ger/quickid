@@ -17,7 +17,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -28,10 +30,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import kotlinx.coroutines.flow.Flow
+import org.qid.R
 import org.qid.core.infrastructure.FileRepository
 import org.qid.core.models.IdentityFile
 import org.qid.infrastructure.MockFileRepository
-import org.qid.R
 import org.qid.ui.components.AddIdentityFileDialog
 import org.qid.ui.components.FileItem
 import org.qid.ui.components.TitleContainer
@@ -42,7 +45,9 @@ fun HomeScreen(navController: NavController) {
     var showDialog by remember { mutableStateOf(false) }
 
     Box(
-        modifier = Modifier.background(MaterialTheme.colorScheme.surface).fillMaxSize()
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.surface)
+            .fillMaxSize()
     ) {
         Column {
             HelloSection()
@@ -64,7 +69,9 @@ fun HelloSection(
     name: String = "Gerardo", onClickSearch: () -> Unit = {}
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().padding(15.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -81,14 +88,18 @@ fun HelloSection(
             )
         }
         Box(
-            modifier = Modifier.border(
-                1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium
-            ).size(36.dp), contentAlignment = Alignment.Center
+            modifier = Modifier
+                .border(
+                    1.dp, MaterialTheme.colorScheme.outline, MaterialTheme.shapes.medium
+                )
+                .size(36.dp), contentAlignment = Alignment.Center
         ) {
             Icon(
-                modifier = Modifier.size(16.dp).clickable {
-                    onClickSearch()
-                },
+                modifier = Modifier
+                    .size(16.dp)
+                    .clickable {
+                        onClickSearch()
+                    },
                 painter = painterResource(R.drawable.ic_search),
                 contentDescription = "Search",
                 tint = MaterialTheme.colorScheme.onSurface
@@ -99,7 +110,14 @@ fun HelloSection(
 }
 
 @Composable
-fun RecentIdentityFileSection(files: List<IdentityFile>, onClickEdit: () -> Unit = {}) {
+fun RecentIdentityFileSection(files: Flow<List<IdentityFile>>, onClickEdit: () -> Unit = {}) {
+    val flowValues = remember { mutableStateListOf<IdentityFile>() }
+
+    LaunchedEffect(Unit) {
+        files.collect {
+            flowValues.addAll(it)
+        }
+    }
     Row {
         TitleContainer(
             title = stringResource(R.string.import_identity_file), label = "- Clear"
@@ -108,7 +126,7 @@ fun RecentIdentityFileSection(files: List<IdentityFile>, onClickEdit: () -> Unit
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(files) { _, file ->
+                itemsIndexed(flowValues) { _, file ->
                     FileItem(identityFile = file)
                 }
             }
@@ -116,8 +134,16 @@ fun RecentIdentityFileSection(files: List<IdentityFile>, onClickEdit: () -> Unit
     }
 }
 
+
 @Composable
-fun QuickIdentityFilesSection(files: List<IdentityFile>, onClickEdit: () -> Unit = {}) {
+fun QuickIdentityFilesSection(files: Flow<List<IdentityFile>>, onClickEdit: () -> Unit = {}) {
+    val flowValues = remember { mutableStateListOf<IdentityFile>() }
+
+    LaunchedEffect(Unit) {
+        files.collect {
+            flowValues.addAll(it)
+        }
+    }
     Row {
         TitleContainer(
             title = stringResource(R.string.recent_identity_file), label = "+ Add",
@@ -127,7 +153,7 @@ fun QuickIdentityFilesSection(files: List<IdentityFile>, onClickEdit: () -> Unit
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(files) { _, file ->
+                itemsIndexed(flowValues) { _, file ->
                     FileItem(identityFile = file)
                 }
             }
