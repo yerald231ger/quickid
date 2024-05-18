@@ -70,6 +70,7 @@ android {
         implementation(libs.navigation.compose)
         implementation(libs.play.services.mlkit.document.scanner)
         implementation(libs.androidx.appcompat)
+        implementation(libs.androidx.viewmodel.compose)
 
         debugImplementation(libs.compose.ui.tooling)
     }

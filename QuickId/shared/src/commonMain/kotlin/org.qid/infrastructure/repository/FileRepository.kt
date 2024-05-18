@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.map
 import org.qid.core.infrastructure.FileRepository
 import org.qid.core.models.IdentityFile
 import org.qid.infrastructure.database.QuickIdDatabase
-import org.qid.infrastructure.entities.toEntityFile
-import org.qid.infrastructure.entities.toIdentityFile
+import org.qid.infrastructure.mapping.toEntityFile
+import org.qid.infrastructure.mapping.toIdentityFile
 
 class QuickIdFileRepository(
     private var database: QuickIdDatabase,
@@ -29,7 +29,7 @@ class QuickIdFileRepository(
         }
     }
 
-    override fun getFiles(id: Long?): Flow<List<IdentityFile>> {
+    override fun getFiles(id: String?): Flow<List<IdentityFile>> {
 
         if (id == null) {
             return database.fileDao().getAllAsFlow().map { list ->

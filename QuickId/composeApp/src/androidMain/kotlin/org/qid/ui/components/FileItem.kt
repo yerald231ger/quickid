@@ -23,7 +23,7 @@ import org.qid.core.models.IdentityFile
 @Preview
 @Composable
 fun FileItem(
-    identityFile: IdentityFile = IdentityFile.create(100),
+    identityFile: IdentityFile = IdentityFile.create("dfa6ff0c-b3cd-4f08-a86c-e018283165ed", "myFile.docx"),
     shape: Shape = MaterialTheme.shapes.small,
 ) {
     ElevatedCard(

@@ -15,15 +15,17 @@ kotlinxDatetime = "0.6.0-RC.2"
 compose-plugin = "1.6.2"
 coreSplashscreen = "1.0.1"
 junit = "4.13.2"
+kotlinxDatetimeVersion = "0.4.0"
 ktorVersion = "2.3.8"
 kotlin = "1.9.23"
 material3Android = "1.2.1"
 navigationCompose = "2.7.7"
 playServicesMlkitDocumentScanner = "16.0.0-beta1"
 skie = "0.6.2"
-androidx-room = "2.7.0-alpha01"
+androidx-room = "2.7.0-alpha02"
 ksp = "1.9.23-1.0.19"
 sqlite = "2.5.0-SNAPSHOT"
+androidx-viewmodelCompose = "2.8.0"
 
 compose-compiler = "1.5.11"
 
@@ -38,6 +40,7 @@ androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-co
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activityCompose" }
+androidx-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-viewmodelCompose" }
 compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "compose" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "compose" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }

@@ -17,9 +17,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -29,20 +28,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.flow.Flow
+import org.qid.IndexViewModel
 import org.qid.R
-import org.qid.core.infrastructure.FileRepository
 import org.qid.core.models.IdentityFile
-import org.qid.infrastructure.MockFileRepository
 import org.qid.ui.components.AddIdentityFileDialog
 import org.qid.ui.components.FileItem
 import org.qid.ui.components.TitleContainer
 
 @Composable
-fun HomeScreen(navController: NavController) {
-    val fileRepository: FileRepository = MockFileRepository()
-    var showDialog by remember { mutableStateOf(false) }
+fun HomeScreen(
+    navController: NavController,
+    viewModel: IndexViewModel = viewModel(factory = IndexViewModel.Factory)
+) {
+    val indexUiState by viewModel.indexUiState.collectAsState()
+    var showAddDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -51,16 +52,19 @@ fun HomeScreen(navController: NavController) {
     ) {
         Column {
             HelloSection()
-            QuickIdentityFilesSection(fileRepository.getTopFiles()) {
-                showDialog = true
+            QuickIdentityFilesSection(indexUiState.topIdentityFiles) {
+                showAddDialog = true
             }
-            RecentIdentityFileSection(fileRepository.getTopFiles())
+            RecentIdentityFileSection(indexUiState.recentIdentityFiles)
         }
     }
 
-    if (showDialog) AddIdentityFileDialog {
-        showDialog = false
-    }
+    if (showAddDialog)
+        AddIdentityFileDialog(
+            onDismissRequest = {
+                showAddDialog = false
+            },
+            viewModel::saveFile)
 }
 
 @Preview
@@ -110,14 +114,7 @@ fun HelloSection(
 }
 
 @Composable
-fun RecentIdentityFileSection(files: Flow<List<IdentityFile>>, onClickEdit: () -> Unit = {}) {
-    val flowValues = remember { mutableStateListOf<IdentityFile>() }
-
-    LaunchedEffect(Unit) {
-        files.collect {
-            flowValues.addAll(it)
-        }
-    }
+fun RecentIdentityFileSection(files: List<IdentityFile>, onClickEdit: () -> Unit = {}) {
     Row {
         TitleContainer(
             title = stringResource(R.string.import_identity_file), label = "- Clear"
@@ -126,7 +123,7 @@ fun RecentIdentityFileSection(files: Flow<List<IdentityFile>>, onClickEdit: () -
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(flowValues) { _, file ->
+                itemsIndexed(files) { _, file ->
                     FileItem(identityFile = file)
                 }
             }
@@ -136,24 +133,17 @@ fun RecentIdentityFileSection(files: Flow<List<IdentityFile>>, onClickEdit: () -
 
 
 @Composable
-fun QuickIdentityFilesSection(files: Flow<List<IdentityFile>>, onClickEdit: () -> Unit = {}) {
-    val flowValues = remember { mutableStateListOf<IdentityFile>() }
-
-    LaunchedEffect(Unit) {
-        files.collect {
-            flowValues.addAll(it)
-        }
-    }
+fun QuickIdentityFilesSection(files: List<IdentityFile>, onClickAdd: () -> Unit = {}) {
     Row {
         TitleContainer(
             title = stringResource(R.string.recent_identity_file), label = "+ Add",
-            onClickLabel = onClickEdit
+            onClickLabel = onClickAdd
         ) {
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                itemsIndexed(flowValues) { _, file ->
+                itemsIndexed(files) { _, file ->
                     FileItem(identityFile = file)
                 }
             }

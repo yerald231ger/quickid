@@ -51,6 +51,7 @@ import com.google.mlkit.vision.documentscanner.GmsDocumentScannerOptions.SCANNER
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanning
 import com.google.mlkit.vision.documentscanner.GmsDocumentScanningResult
 import org.qid.core.models.IdentityFile
+import org.qid.di.createGuid
 import org.qid.ui.icons.DocumentScanner
 import org.qid.ui.icons.PhotoLibrary
 import org.qid.ui.icons.Storage
@@ -58,9 +59,12 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+@Suppress("SpellCheckingInspection")
 @Composable
-fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
-
+fun AddIdentityFileDialog(
+    onDismissRequest: () -> Unit = {},
+    onNewIdentityFile: (IdentityFile) -> Unit = {}
+) {
     val context = LocalContext.current
     val options =
         GmsDocumentScannerOptions.Builder()
@@ -74,16 +78,22 @@ fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
         PickVisualMedia()
     ) {
         it?.let {
-            val dateNow = LocalDateTime.now()
-            @Suppress("SpellCheckingInspection")
-            val dateNowFormatted = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(dateNow)
+
+            val fileId = createGuid()
+            val fileExtension = "jpg"
+            val dateNowFormatted =
+                DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now())
+            val fileName = IdentityFile.createNameForImageFile(dateNowFormatted, fileExtension)
+            val identityFile = IdentityFile.create(fileId, fileName)
+
             val fileOutputStream = File(
                 context.filesDir,
-                IdentityFile.createNameForImageFile(dateNowFormatted, "jpg")
+                identityFile.name
             ).outputStream()
             it.let {
                 context.contentResolver.openInputStream(it).use { inputStream ->
                     inputStream?.copyTo(fileOutputStream)
+                    onNewIdentityFile(identityFile)
                 }
             }
         }
@@ -93,19 +103,23 @@ fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
         OpenDocument()
     ) {
         it?.let {
-            val dateNow = LocalDateTime.now()
-            @Suppress("SpellCheckingInspection")
-            val dateNowFormatted = DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(dateNow)
-
             val mimeType = context.contentResolver.getType(it)
-            val fileExtension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType)
+
+            val fileId = createGuid()
+            val fileExtension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType) ?: ""
+            val dateNowFormatted =
+                DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now())
+            val fileName = IdentityFile.createNameForDocumentFile(dateNowFormatted, fileExtension)
+            val identityFile = IdentityFile.create(fileId, fileName)
+
             val fileOutputStream = File(
                 context.filesDir,
-                IdentityFile.createNameForDocumentFile(dateNowFormatted, fileExtension!!)
+                identityFile.name
             ).outputStream()
             it.let { it1 ->
                 context.contentResolver.openInputStream(it1)?.use { inputStream ->
                     inputStream.copyTo(fileOutputStream)
+                    onNewIdentityFile(identityFile)
                 }
             }
         }
@@ -120,17 +134,21 @@ fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
                 scannedDocumentUri = result?.pages?.map { it.imageUri } ?: emptyList()
                 result?.pdf?.let { pdf ->
 
-                    val dateNow = LocalDateTime.now()
-
-                    @Suppress("SpellCheckingInspection")
+                    val fileId = createGuid()
+                    val fileExtension = "pdf"
                     val dateNowFormatted =
-                        DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(dateNow)
+                        DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now())
+                    val fileName =
+                        IdentityFile.createNameForScannedFile(dateNowFormatted, fileExtension)
+                    val identityFile = IdentityFile.create(fileId, fileName)
+
                     val fileOutputStream = File(
                         context.filesDir,
-                        IdentityFile.createNameForScannedFile(dateNowFormatted, "pdf")
+                        identityFile.name
                     ).outputStream()
                     context.contentResolver.openInputStream(pdf.uri).use {
                         it?.copyTo(fileOutputStream)
+                        onNewIdentityFile(identityFile)
                     }
                 }
             }
@@ -138,11 +156,15 @@ fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
 
     Dialog(onDismissRequest = { onDismissRequest() }) {
         Card(
-            modifier = Modifier.fillMaxWidth().height(400.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(400.dp),
             shape = RoundedCornerShape(16.dp),
         ) {
             Column(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
             ) {
                 Row {
                     Text(
@@ -169,46 +191,56 @@ fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
                         )
                         sources.forEach { source ->
                             Row(
-                                modifier = Modifier.height(57.dp).fillMaxWidth().clickable {
-                                    when (source.first) {
-                                        "Scan" -> {
-                                            scanner.getStartScanIntent(context as Activity)
-                                                .addOnSuccessListener {
-                                                    scanDocumentLauncher.launch(
-                                                        IntentSenderRequest.Builder(
-                                                            it
-                                                        ).build()
-                                                    )
-                                                }
-                                                .addOnFailureListener {
-                                                    Toast.makeText(
-                                                        context,
-                                                        "Failed to start scan",
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                        }
+                                modifier = Modifier
+                                    .height(57.dp)
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        when (source.first) {
+                                            "Scan" -> {
+                                                scanner
+                                                    .getStartScanIntent(context as Activity)
+                                                    .addOnSuccessListener {
+                                                        scanDocumentLauncher.launch(
+                                                            IntentSenderRequest
+                                                                .Builder(
+                                                                    it
+                                                                )
+                                                                .build()
+                                                        )
+                                                    }
+                                                    .addOnFailureListener {
+                                                        Toast
+                                                            .makeText(
+                                                                context,
+                                                                "Failed to start scan",
+                                                                Toast.LENGTH_SHORT
+                                                            )
+                                                            .show()
+                                                    }
+                                            }
 
-                                        "Photo Gallery" -> {
-                                            singlePhotoPickerLauncher.launch(
-                                                PickVisualMediaRequest()
-                                            )
-                                        }
-
-                                        "File Manager" -> {
-                                            singleFilePickerLauncher.launch(
-                                                arrayOf(
-                                                    "application/pdf",
-                                                    "application/msword",
-                                                    "text/plain",
+                                            "Photo Gallery" -> {
+                                                singlePhotoPickerLauncher.launch(
+                                                    PickVisualMediaRequest()
                                                 )
-                                            )
+                                            }
+
+                                            "File Manager" -> {
+                                                singleFilePickerLauncher.launch(
+                                                    arrayOf(
+                                                        "application/pdf",
+                                                        "application/msword",
+                                                        "text/plain",
+                                                    )
+                                                )
+                                            }
                                         }
-                                    }
-                                }, verticalAlignment = Alignment.CenterVertically
+                                    }, verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Box(
-                                    modifier = Modifier.size(40.dp).clip(RoundedCornerShape(40.dp))
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .clip(RoundedCornerShape(40.dp))
                                         .background(MaterialTheme.colorScheme.secondaryContainer),
                                     contentAlignment = Alignment.Center
                                 ) {
@@ -231,13 +263,17 @@ fun AddIdentityFileDialog(onDismissRequest: () -> Unit = {}) {
                 Row(
                     horizontalArrangement = Arrangement.End,
                     verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxSize().padding(top = 16.dp)
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 16.dp)
                 ) {
                     Button(
                         onClick = {
                             onDismissRequest()
                         },
-                        modifier = Modifier.height(40.dp).width(100.dp),
+                        modifier = Modifier
+                            .height(40.dp)
+                            .width(100.dp),
                         colors = ButtonDefaults.buttonColors(
                             contentColor = MaterialTheme.colorScheme.onSecondary,
                             containerColor = MaterialTheme.colorScheme.secondary

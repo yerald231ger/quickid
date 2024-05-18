@@ -11,35 +11,29 @@ class MockFileRepository : FileRepository {
 
     private var identityFiles = listOf(
         listOf(
-            IdentityFile.create(1).apply {
-                name = "Pasaporte"
+            IdentityFile.create("0f580c14-9b8f-4bb9-b7b0-e0d52c8c00d2", "passport.jpg").apply {
                 importance = 0
                 identityFileType = IdentityFileType.PASSPORT
                 tags = listOf("tag1", "tag2")
             },
-            IdentityFile.create(2).apply {
-                name = "Ine"
+            IdentityFile.create("0c57ff3c-4f1f-49af-8060-7be98b48b3f3", "ine.jpg").apply {
                 importance = 0
                 tags = listOf("tag3", "tag4")
             },
-            IdentityFile.create(3).apply {
-                name = "Licencia de conducir"
+            IdentityFile.create("f92fab4c-bca5-4c94-9081-a1add475eb6b", "driverLicense.jpg").apply {
                 importance = 0
                 identityFileType = IdentityFileType.DRIVER_LICENSE
                 tags = listOf("tag5", "tag6")
             },
-            IdentityFile.create(4).apply {
-                name = "Acta de nacimiento"
+            IdentityFile.create("d57e3955-2609-49c7-b95c-3ed706e13300", "birthdayDocument.pdf").apply {
                 importance = 0
                 tags = listOf("tag7", "tag8")
             },
-            IdentityFile.create(5).apply {
-                name = "Comprobante de domicilio"
+            IdentityFile.create("87d3436c-6cb2-482f-9012-493d7d777638", "address.pdf").apply {
                 importance = 0
                 tags = listOf("tag9", "tag10")
             },
-            IdentityFile.create(6).apply {
-                name = "Curp"
+            IdentityFile.create("a0e97dce-c182-47c6-8490-5e9764029f26", "curp.jpg").apply {
                 importance = 0
                 tags = listOf("tag11", "tag12")
             })
@@ -55,7 +49,7 @@ class MockFileRepository : FileRepository {
         return flow
     }
 
-    override fun getFiles(id: Long?): Flow<List<IdentityFile>> {
+    override fun getFiles(id: String?): Flow<List<IdentityFile>> {
         if (id == null) return flow
 
         return flow.map { files ->
