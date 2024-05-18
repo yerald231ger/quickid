@@ -9,19 +9,22 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.launch
+import org.qid.IndexViewModel
 import org.qid.core.models.IdentityFile
-import org.qid.infrastructure.MockFileRepository
 import org.qid.ui.components.FileListItem
 import org.qid.ui.components.ScreenHeader
 
 @Composable
-fun IdentityFilesScreen(navController: NavController) {
-    val fileRepository = MockFileRepository()
+fun IdentityFilesScreen(
+    navController: NavController,
+    viewModel: IndexViewModel = viewModel(factory = IndexViewModel.Factory)
+) {
+    val identityFileUiState by viewModel.identityFileUiState.collectAsState()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -29,22 +32,17 @@ fun IdentityFilesScreen(navController: NavController) {
     ) {
         Column {
             ScreenHeader(screenTitle = "Identity Files")
-            ListIdentityFilesSection(fileRepository.getTopFiles())
+            ListIdentityFilesSection(identityFileUiState.identityFiles)
         }
     }
 }
 
 @Composable
-fun ListIdentityFilesSection(files: Flow<List<IdentityFile>> = MockFileRepository().getTopFiles()) {
-    val coroutineScope = rememberCoroutineScope()
+fun ListIdentityFilesSection(files: List<IdentityFile> = emptyList()) {
     Row {
         LazyColumn {
-            coroutineScope.launch {
-                files.collect { items ->
-                    items(items) { file ->
-                        FileListItem(identityFile = file)
-                    }
-                }
+            items(files) { file ->
+                FileListItem(identityFile = file)
             }
         }
     }

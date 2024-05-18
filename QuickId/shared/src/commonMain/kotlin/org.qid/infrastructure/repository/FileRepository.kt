@@ -30,15 +30,14 @@ class QuickIdFileRepository(
     }
 
     override fun getFiles(id: String?): Flow<List<IdentityFile>> {
-
-        if (id == null) {
-            return database.fileDao().getAllAsFlow().map { list ->
+        return if (id == null) {
+            database.fileDao().getAllAsFlow().map { list ->
                 list.map {
                     it.toIdentityFile()
                 }
             }
         } else
-            return database.fileDao().getAllAsFlow().map { list ->
+            database.fileDao().getAllAsFlow().map { list ->
                 list.filter { it.id == id }.map {
                     it.toIdentityFile()
                 }

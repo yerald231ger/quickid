@@ -10,6 +10,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.qid.core.infrastructure.FileRepository
@@ -26,6 +27,15 @@ class IndexViewModel(private val repository: FileRepository) : ViewModel() {
             viewModelScope,
             SharingStarted.WhileSubscribed(5000),
             IndexUiState()
+        )
+
+    val identityFileUiState: StateFlow<IdentityFileUiState> =
+        repository.getFiles(null).map {
+            IdentityFileUiState(it)
+        }.stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            IdentityFileUiState()
         )
 
     fun saveFile(identityFile: IdentityFile) {
@@ -49,4 +59,8 @@ class IndexViewModel(private val repository: FileRepository) : ViewModel() {
 data class IndexUiState(
     val topIdentityFiles: List<IdentityFile> = listOf(),
     val recentIdentityFiles: List<IdentityFile> = listOf()
+)
+
+data class IdentityFileUiState(
+    val identityFiles: List<IdentityFile> = listOf()
 )
