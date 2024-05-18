@@ -11,8 +11,6 @@ import androidx.core.animation.doOnEnd
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.launch
-import org.qid.core.constants.IdentityFileType
-import org.qid.core.models.IdentityFile
 import org.qid.di.AppContainer
 import org.qid.di.QuickIdDatabaseFactory
 import org.qid.ui.navigation.AppNavigation
@@ -26,15 +24,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         container = AppContainer(QuickIdDatabaseFactory(this.application))
-        val identityFile = IdentityFile.create(2).also {
-            it.name = "First File"
-            it.description = "Description of the first file."
-            it.importance = 1
-            it.identityFileType = IdentityFileType.ID
-            it.size = emptyArray()
-            it.tags = emptyList()
-            it.path = "Test"
-        }
+//        val identityFile = IdentityFile.create(2).also {
+//            it.name = "First File"
+//            it.description = "Description of the first file."
+//            it.importance = 1
+//            it.identityFileType = IdentityFileType.ID
+//            it.size = emptyArray()
+//            it.tags = emptyList()
+//            it.path = "Test"
+//        }
 
 //        lifecycleScope.launch {
 //            container.fileRepository.saveFile(identityFile)
