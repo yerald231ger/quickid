@@ -12,17 +12,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import org.qid.IndexViewModel
 import org.qid.core.models.IdentityFile
 import org.qid.ui.components.FileListItem
 import org.qid.ui.components.ScreenHeader
+import org.qid.viewModels.IndexViewModel
 
 @Composable
 fun IdentityFilesScreen(
     navController: NavController,
-    viewModel: IndexViewModel = viewModel(factory = IndexViewModel.Factory)
+    viewModel: IndexViewModel
 ) {
     val identityFileUiState by viewModel.identityFileUiState.collectAsState()
     Box(

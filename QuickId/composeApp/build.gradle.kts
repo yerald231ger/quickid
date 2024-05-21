@@ -12,13 +12,6 @@ kotlin {
             }
         }
     }
-
-    sourceSets {
-        androidMain.dependencies {
-        }
-        commonMain.dependencies {
-        }
-    }
 }
 
 android {
@@ -62,17 +55,23 @@ android {
         implementation(compose.ui)
         implementation(compose.components.resources)
         implementation(compose.components.uiToolingPreview)
+        implementation(compose.material3)
         implementation(projects.shared)
+
         implementation(libs.compose.ui.tooling.preview)
+        debugImplementation(libs.compose.ui.tooling)
+
         implementation(libs.androidx.activity.compose)
-        implementation(libs.androidx.material3.android)
+
         implementation(libs.androidx.core.splashscreen)
         implementation(libs.navigation.compose)
-        implementation(libs.play.services.mlkit.document.scanner)
         implementation(libs.androidx.appcompat)
-        implementation(libs.androidx.viewmodel.compose)
 
-        debugImplementation(libs.compose.ui.tooling)
+        implementation(libs.koin.android)
+        implementation(libs.koin.androidx.compose)
+        implementation(libs.lifecycle.viewmodel)
+
+        implementation(libs.play.services.mlkit.document.scanner)
     }
 
 }

@@ -7,6 +7,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import org.qid.infrastructure.database.QuickIdDatabase
 import org.qid.infrastructure.database.dbFileName
+import org.qid.infrastructure.database.instantiateImpl
 import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSURL

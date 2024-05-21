@@ -4,4 +4,8 @@ class Greeting {
     fun greet(): String {
         return "Hello, ${platform.name}!"
     }
+
+    fun anotherText(): String {
+        return "Another text"
+    }
 }

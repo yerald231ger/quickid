@@ -28,19 +28,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import org.qid.IndexViewModel
 import org.qid.R
 import org.qid.core.models.IdentityFile
 import org.qid.ui.components.AddIdentityFileDialog
 import org.qid.ui.components.FileItem
 import org.qid.ui.components.TitleContainer
+import org.qid.viewModels.IndexViewModel
 
 @Composable
 fun HomeScreen(
     navController: NavController,
-    viewModel: IndexViewModel = viewModel(factory = IndexViewModel.Factory)
+    viewModel: IndexViewModel
 ) {
     val indexUiState by viewModel.indexUiState.collectAsState()
     var showAddDialog by remember { mutableStateOf(false) }

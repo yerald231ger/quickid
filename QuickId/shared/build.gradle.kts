@@ -15,7 +15,7 @@ kotlin {
             }
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -31,6 +31,11 @@ kotlin {
         languageSettings.optIn("kotlin.experimental.ExperimentalObjCName")
     }
     sourceSets {
+        androidMain.dependencies {
+            implementation(libs.koin.android)
+            implementation(libs.koin.androidx.compose)
+        }
+
         commonMain.dependencies {
             // put your Multiplatform dependencies here
             implementation(libs.ktor.serialization.kotlinx.json)
@@ -38,6 +43,10 @@ kotlin {
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.androidx.room.runtime)
             implementation(libs.sqlite.bundled)
+
+            api(libs.koin.core)
+            implementation(libs.koin.compose)
+            implementation(libs.lifecycle.viewmodel)
         }
 
     }
@@ -57,10 +66,7 @@ android {
 }
 
 dependencies {
-    add("kspAndroid", libs.androidx.room.compiler)
-    add("kspIosSimulatorArm64", libs.androidx.room.compiler)
-    add("kspIosX64", libs.androidx.room.compiler)
-    add("kspIosArm64", libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
 }
 
 room {

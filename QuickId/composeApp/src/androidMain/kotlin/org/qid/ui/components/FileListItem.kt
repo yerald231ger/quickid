@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import org.qid.core.models.IdentityFile
-import java.util.UUID
 
 @Preview
 @Composable
@@ -30,7 +29,6 @@ fun FileListItem(
     identityFile: IdentityFile = IdentityFile.create("dfa6ff0c-b3cd-4f08-a86c-e018283165ed", "myFile.docx"),
     onClickMore: () -> Unit = {}
 ) {
-    UUID.randomUUID()
     Box(
         modifier = Modifier
             .height(68.dp)
