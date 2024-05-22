@@ -1,12 +1,10 @@
 package org.qid.ui.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,21 +21,21 @@ import org.qid.core.models.IdentityFile
 @Preview
 @Composable
 fun FileItem(
-    identityFile: IdentityFile = IdentityFile.create("dfa6ff0c-b3cd-4f08-a86c-e018283165ed", "myFile.docx"),
+    identityFile: IdentityFile = IdentityFile.create(
+        "dfa6ff0c-b3cd-4f08-a86c-e018283165ed",
+        "myFile.docx"
+    ),
     shape: Shape = MaterialTheme.shapes.small,
+    onClickAction: (id: IdentityFile) -> Unit = {}
 ) {
-    ElevatedCard(
+    Card(
+        onClick = { onClickAction(identityFile) },
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
             contentColor = MaterialTheme.colorScheme.onSurface
         ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 3.dp
-        ),
-        shape = shape,
         modifier = Modifier
-            .width(80.dp)
-            .height(116.dp)
+            .size(width = 240.dp, height = 120.dp)
     ) {
         Icon(
             painter = fileIconSelector(identityFile.identityFileType),

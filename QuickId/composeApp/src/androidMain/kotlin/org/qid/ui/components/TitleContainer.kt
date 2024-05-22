@@ -11,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
@@ -23,7 +22,6 @@ fun TitleContainer(
     onClickLabel: () -> Unit = {},
     content: @Composable () -> Unit = {}
 ) {
-    val context = LocalContext.current;
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -45,18 +43,19 @@ fun TitleContainer(
                         modifier = Modifier
                             .align(Alignment.CenterStart)
                     )
-                    IconButton(
-                        onClick = onClickLabel,
-                        content = {
-                            Text(
-                                text = label,
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.secondary
-                            )
-                        },
-                        modifier = Modifier
-                            .align(Alignment.CenterEnd)
-                    )
+                    if (label.isNotEmpty())
+                        IconButton(
+                            onClick = onClickLabel,
+                            content = {
+                                Text(
+                                    text = label,
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.secondary
+                                )
+                            },
+                            modifier = Modifier
+                                .align(Alignment.CenterEnd)
+                        )
 
                 }
             }

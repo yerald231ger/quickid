@@ -2,6 +2,7 @@ package org.qid.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -12,6 +13,9 @@ import org.qid.core.infrastructure.FileRepository
 import org.qid.core.models.IdentityFile
 
 class IndexViewModel(private val repository: FileRepository) : ViewModel() {
+
+    private val _selectedIdentityFile = MutableStateFlow<IdentityFile?>(null)
+    val selectedIdentityFile: StateFlow<IdentityFile?> = _selectedIdentityFile
 
     val indexUiState: StateFlow<IndexUiState> =
         combine(repository.getTopFiles(), repository.getRecentFiles()) { topFiles, recentFiles ->
@@ -36,6 +40,13 @@ class IndexViewModel(private val repository: FileRepository) : ViewModel() {
             repository.saveFile(identityFile)
         }
     }
+
+    fun setSelectedIdentityFile(identityFile: IdentityFile) {
+        viewModelScope.launch {
+            _selectedIdentityFile.emit(identityFile)
+        }
+    }
+
 }
 
 data class IndexUiState(

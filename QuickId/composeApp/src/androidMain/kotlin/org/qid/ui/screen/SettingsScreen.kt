@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
-import org.qid.ui.components.ScreenHeader
 
 @Composable
 fun SettingsScreen(navController: NavController) {
@@ -15,6 +14,5 @@ fun SettingsScreen(navController: NavController) {
             .fillMaxSize()
     ) {
         Log.i("SettingScreen", "SettingScreen")
-        ScreenHeader(screenTitle = "Settings")
     }
 }

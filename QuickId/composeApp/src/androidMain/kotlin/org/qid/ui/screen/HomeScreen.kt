@@ -19,9 +19,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -31,7 +28,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import org.qid.R
 import org.qid.core.models.IdentityFile
-import org.qid.ui.components.AddIdentityFileDialog
 import org.qid.ui.components.FileItem
 import org.qid.ui.components.TitleContainer
 import org.qid.viewModels.IndexViewModel
@@ -42,7 +38,6 @@ fun HomeScreen(
     viewModel: IndexViewModel
 ) {
     val indexUiState by viewModel.indexUiState.collectAsState()
-    var showAddDialog by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier
@@ -51,19 +46,12 @@ fun HomeScreen(
     ) {
         Column {
             HelloSection()
-            QuickIdentityFilesSection(indexUiState.topIdentityFiles) {
-                showAddDialog = true
-            }
-            RecentIdentityFileSection(indexUiState.recentIdentityFiles)
+            QuickIdentityFilesSection(indexUiState.topIdentityFiles,
+                onClickItem = {
+                    viewModel.setSelectedIdentityFile(it)
+                })
         }
     }
-
-    if (showAddDialog)
-        AddIdentityFileDialog(
-            onDismissRequest = {
-                showAddDialog = false
-            },
-            viewModel::saveFile)
 }
 
 @Preview
@@ -113,10 +101,14 @@ fun HelloSection(
 }
 
 @Composable
-fun RecentIdentityFileSection(files: List<IdentityFile>, onClickEdit: () -> Unit = {}) {
+fun RecentIdentityFileSection(
+    files: List<IdentityFile>,
+    onClickEdit: () -> Unit = {},
+    onClickItem: (id: String) -> Unit = {}
+) {
     Row {
         TitleContainer(
-            title = stringResource(R.string.import_identity_file), label = "- Clear"
+            title = stringResource(R.string.import_identity_file)
         ) {
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
@@ -132,18 +124,23 @@ fun RecentIdentityFileSection(files: List<IdentityFile>, onClickEdit: () -> Unit
 
 
 @Composable
-fun QuickIdentityFilesSection(files: List<IdentityFile>, onClickAdd: () -> Unit = {}) {
+fun QuickIdentityFilesSection(
+    files: List<IdentityFile>,
+    onClickAdd: () -> Unit = {},
+    onClickItem: (identityFile: IdentityFile) -> Unit = {}
+) {
     Row {
         TitleContainer(
-            title = stringResource(R.string.recent_identity_file), label = "+ Add",
-            onClickLabel = onClickAdd
+            title = stringResource(R.string.recent_identity_file)
         ) {
             LazyRow(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(files) { _, file ->
-                    FileItem(identityFile = file)
+                    FileItem(identityFile = file, onClickAction = {
+                        onClickItem(file)
+                    })
                 }
             }
         }
