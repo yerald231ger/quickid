@@ -1,8 +1,8 @@
 package org.qid.ui.navigation
 
+import android.app.Application
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
@@ -11,126 +11,113 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.BottomAppBarDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.FloatingActionButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.koin.compose.KoinContext
+import org.koin.compose.koinInject
+import org.qid.BottomBarItem
 import org.qid.ui.components.AddIdentityFileDialog
+import org.qid.ui.icons.Inventory2
 import org.qid.ui.screen.HomeScreen
 import org.qid.ui.screen.IdentityFilesScreen
+import org.qid.ui.screen.SearchScreen
 import org.qid.ui.screen.SettingsScreen
 import org.qid.ui.theme.QuickIdThemes
 import org.qid.viewModels.IndexViewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppNavigation() {
+
+    val bottomBarItems = listOf(
+        BottomBarItem(
+            AppScreens.HomeScreen.route,
+            Icons.Filled.Home,
+            Icons.Outlined.Home,
+            selected = true
+        ),
+        BottomBarItem(
+            AppScreens.SearchScreen.route,
+            Icons.Default.Search,
+            Icons.Default.Search
+        ),
+        BottomBarItem(
+            AppScreens.IdentityFilesScreen.route,
+            Icons.Filled.Inventory2,
+            Icons.Outlined.Inventory2
+        ),
+        BottomBarItem(
+            AppScreens.SettingsScreen.route,
+            Icons.Default.MoreVert,
+            Icons.Default.MoreVert
+        )
+    )
+
+    val fileSelectedBottomBarItems = listOf(
+        BottomBarItem(
+            "Delete",
+            Icons.Default.Delete,
+            Icons.Default.Delete
+        ),
+        BottomBarItem(
+            "Edit",
+            Icons.Default.Edit,
+            Icons.Default.Edit
+        ),
+        BottomBarItem(
+            "Share",
+            Icons.Default.Share,
+            Icons.Default.Share
+        )
+    )
+
 
     QuickIdThemes {
         Surface {
             KoinContext {
+                val scope = rememberCoroutineScope()
                 val navController = rememberNavController()
                 val mainViewModel = koinViewModel<IndexViewModel>()
+                val snackBarHostState = remember { SnackbarHostState() }
                 var showAddIdentityFileDialog by remember { mutableStateOf(false) }
-                var titleTopBar by remember { mutableStateOf("Quick Id") }
-                val scrollBehavior =
-                    TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState())
                 var isFileSelected by remember { mutableStateOf(false) }
-                mainViewModel.selectedIdentityFile.collectAsState().value?.let {
-                    isFileSelected = true
+                var titleTopBar by remember { mutableStateOf("Quick Id") }
+                val context = koinInject<Application>()
+                var filesdir = context.filesDir
+                mainViewModel.selectedIdentityFile.collectAsState().value.let {
+                    isFileSelected = it != null
                 }
 
-                navController.addOnDestinationChangedListener { _, destination, _ ->
-                    titleTopBar = when (destination.route) {
-                        AppScreens.HomeScreen.route -> "Quick Id"
-                        AppScreens.IdentityFilesScreen.route -> "Identity Files"
-                        AppScreens.SettingsScreen.route -> "Settings"
-                        else -> "Quick Id"
-                    }
+                mainViewModel.currentScreenName.collectAsState().value.let {
+                    titleTopBar = it
                 }
 
                 Scaffold(
-
-                    //***** TOP BAR *****
-                    topBar = {
-                        CenterAlignedTopAppBar(
-                            colors = TopAppBarDefaults.topAppBarColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
-                                titleContentColor = MaterialTheme.colorScheme.primary,
-                            ),
-                            title = {
-                                Text(
-                                    titleTopBar,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            },
-                            navigationIcon = {
-                                IconButton(onClick = {
-                                    navController.popBackStack()
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                        contentDescription = "Localized description"
-                                    )
-                                }
-                            },
-                            actions = {
-                                IconButton(onClick = {
-                                    navController.navigate(AppScreens.SearchScreen.route) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Filled.Search,
-                                        contentDescription = "Search files"
-                                    )
-                                }
-                                IconButton(onClick = {
-                                    navController.navigate(AppScreens.IdentityFilesScreen.route) {
-                                        popUpTo(navController.graph.findStartDestination().id) {
-                                            saveState = true
-                                        }
-                                        launchSingleTop = true
-                                        restoreState = true
-                                    }
-                                })
-                                {
-                                    Icon(
-                                        imageVector = Icons.Filled.MoreVert,
-                                        contentDescription = "More options"
-                                    )
-                                }
-                            },
-                            scrollBehavior = scrollBehavior,
-                        )
+                    snackbarHost = {
+                        SnackbarHost(hostState = snackBarHostState)
                     },
 
                     //***** BOTTOM BAR *****
@@ -141,46 +128,62 @@ fun AppNavigation() {
                         ) {
                             BottomAppBar(
                                 actions = {
-                                    if (it) {
-                                        IconButton(onClick = {
-                                        }) {
-                                            Icon(
-                                                Icons.Default.Home,
-                                                contentDescription = "Home screen"
-                                            )
+                                    if (!it) {
+                                        bottomBarItems.forEach { bottomBarItem ->
+                                            bottomBarItem.selected =
+                                                navController.currentDestination?.hierarchy?.any {
+                                                    it.route == bottomBarItem.route
+                                                } == true
+                                            IconButton(onClick = {
+                                                navController.navigate(bottomBarItem.route) {
+                                                    popUpTo(navController.graph.findStartDestination().id) {
+                                                        saveState = true
+                                                    }
+                                                    launchSingleTop = true
+                                                    restoreState = true
+                                                }
+                                            }) {
+                                                Icon(
+                                                    if (bottomBarItem.selected) bottomBarItem.selectedIcon else bottomBarItem.unselectedIcon,
+                                                    contentDescription = null
+                                                )
+                                            }
                                         }
                                     } else {
-                                        IconButton(onClick = {
+                                        fileSelectedBottomBarItems.forEach { bottomBarItem ->
+                                            IconButton(onClick = {
+                                                if (bottomBarItem.route == "Delete")
+                                                    scope.launch {
+                                                        val result = snackBarHostState.showSnackbar(
+                                                            message = "Archivo ${mainViewModel.selectedIdentityFile.value?.name}",
+                                                            actionLabel = "Eliminar",
+                                                            withDismissAction = true
+                                                        )
 
-                                        }) {
-                                            Icon(
-                                                Icons.Default.Delete,
-                                                contentDescription = "Remove file",
-                                            )
-                                        }
-                                        IconButton(onClick = {
+                                                        if (result == SnackbarResult.ActionPerformed) {
+                                                            //delete file
+                                                            context.deleteFile(mainViewModel.selectedIdentityFile.value!!.name)
+                                                            mainViewModel.deleteFile(mainViewModel.selectedIdentityFile.value!!)
 
-                                        }) {
-                                            Icon(
-                                                Icons.Default.Edit,
-                                                contentDescription = "Edit file"
-                                            )
-                                        }
-                                        IconButton(onClick = {
+                                                        }
 
-                                        }) {
-                                            Icon(
-                                                Icons.Default.Share,
-                                                contentDescription = "Share file",
-                                            )
+                                                        isFileSelected = false
+                                                    }
+                                            }) {
+                                                Icon(
+                                                    bottomBarItem.selectedIcon,
+                                                    contentDescription = "Remove file",
+                                                )
+                                            }
                                         }
                                     }
-
                                 },
                                 floatingActionButton = {
                                     if (isFileSelected) {
                                         FloatingActionButton(
-                                            onClick = { isFileSelected = false },
+                                            onClick = {
+                                                mainViewModel.setSelectedIdentityFile(null)
+                                            },
                                             containerColor = BottomAppBarDefaults.bottomAppBarFabColor,
                                             elevation = FloatingActionButtonDefaults.bottomAppBarFabElevation()
                                         ) {
@@ -214,6 +217,9 @@ fun AppNavigation() {
                         composable(AppScreens.SettingsScreen.route) {
                             SettingsScreen(navController)
                         }
+                        composable(AppScreens.SearchScreen.route) {
+                            SearchScreen(navController)
+                        }
                     }
                 }
 
@@ -222,7 +228,10 @@ fun AppNavigation() {
                         onDismissRequest = {
                             showAddIdentityFileDialog = false
                         },
-                        mainViewModel::saveFile
+                        onNewIdentityFile = {
+                            mainViewModel.saveFile(it)
+                            showAddIdentityFileDialog = false
+                        }
                     )
             }
         }

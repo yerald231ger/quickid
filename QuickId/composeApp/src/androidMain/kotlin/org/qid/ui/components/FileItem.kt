@@ -26,13 +26,14 @@ fun FileItem(
         "myFile.docx"
     ),
     shape: Shape = MaterialTheme.shapes.small,
+    isSelected: Boolean = true,
     onClickAction: (id: IdentityFile) -> Unit = {}
 ) {
     Card(
         onClick = { onClickAction(identityFile) },
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-            contentColor = MaterialTheme.colorScheme.onSurface
+            containerColor = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.secondaryContainer,
+            contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSecondaryContainer
         ),
         modifier = Modifier
             .size(width = 240.dp, height = 120.dp)
@@ -42,7 +43,7 @@ fun FileItem(
             contentDescription = identityFile.description,
             modifier = Modifier
                 .padding(top = 8.dp)
-                .size(48.dp)
+                .size(68.dp)
                 .align(Alignment.CenterHorizontally)
         )
         Text(

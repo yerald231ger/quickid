@@ -18,9 +18,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TitleContainer(
     title: String = "Title",
-    label: String = "label",
+    label: String = "",
     onClickLabel: () -> Unit = {},
-    content: @Composable () -> Unit = {}
+    content: @Composable () -> Unit = { FileItem() }
 ) {
     Box(
         modifier = Modifier
@@ -42,6 +42,7 @@ fun TitleContainer(
                         style = MaterialTheme.typography.titleSmall,
                         modifier = Modifier
                             .align(Alignment.CenterStart)
+                            .padding(bottom = 8.dp)
                     )
                     if (label.isNotEmpty())
                         IconButton(

@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import org.qid.R
 import org.qid.core.models.IdentityFile
 import org.qid.ui.components.FileItem
+import org.qid.ui.components.ScreenHeader
 import org.qid.ui.components.TitleContainer
 import org.qid.viewModels.IndexViewModel
 
@@ -38,6 +39,7 @@ fun HomeScreen(
     viewModel: IndexViewModel
 ) {
     val indexUiState by viewModel.indexUiState.collectAsState()
+    viewModel.setCurrentScreenName("Home")
 
     Box(
         modifier = Modifier
@@ -45,11 +47,12 @@ fun HomeScreen(
             .fillMaxSize()
     ) {
         Column {
-            HelloSection()
+            ScreenHeader("Home")
             QuickIdentityFilesSection(indexUiState.topIdentityFiles,
                 onClickItem = {
                     viewModel.setSelectedIdentityFile(it)
-                })
+                },
+                selectedIdentityFile = viewModel.selectedIdentityFile.value)
         }
     }
 }
@@ -126,8 +129,8 @@ fun RecentIdentityFileSection(
 @Composable
 fun QuickIdentityFilesSection(
     files: List<IdentityFile>,
-    onClickAdd: () -> Unit = {},
-    onClickItem: (identityFile: IdentityFile) -> Unit = {}
+    onClickItem: (identityFile: IdentityFile) -> Unit = {},
+    selectedIdentityFile: IdentityFile? = null
 ) {
     Row {
         TitleContainer(
@@ -138,9 +141,12 @@ fun QuickIdentityFilesSection(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 itemsIndexed(files) { _, file ->
-                    FileItem(identityFile = file, onClickAction = {
-                        onClickItem(file)
-                    })
+                    FileItem(
+                        identityFile = file, onClickAction = {
+                            onClickItem(file)
+                        },
+                        isSelected = selectedIdentityFile?.id == file.id
+                    )
                 }
             }
         }

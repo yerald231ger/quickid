@@ -24,24 +24,32 @@ fun IdentityFilesScreen(
     viewModel: IndexViewModel
 ) {
     val identityFileUiState by viewModel.identityFileUiState.collectAsState()
+    viewModel.setCurrentScreenName("Files")
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface)
     ) {
         Column {
-            ScreenHeader(screenTitle = "Identity Files")
+            ScreenHeader("All files")
             ListIdentityFilesSection(identityFileUiState.identityFiles)
+            {
+                viewModel.setSelectedIdentityFile(it)
+            }
         }
     }
 }
 
 @Composable
-fun ListIdentityFilesSection(files: List<IdentityFile> = emptyList()) {
+fun ListIdentityFilesSection(
+    files: List<IdentityFile> = emptyList(),
+    onClick: (identityFile: IdentityFile) -> Unit = {}
+) {
     Row {
         LazyColumn {
             items(files) { file ->
-                FileListItem(identityFile = file)
+                FileListItem(identityFile = file, onClick)
             }
         }
     }

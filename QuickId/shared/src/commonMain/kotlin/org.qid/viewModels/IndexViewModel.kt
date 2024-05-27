@@ -17,6 +17,9 @@ class IndexViewModel(private val repository: FileRepository) : ViewModel() {
     private val _selectedIdentityFile = MutableStateFlow<IdentityFile?>(null)
     val selectedIdentityFile: StateFlow<IdentityFile?> = _selectedIdentityFile
 
+    private val _currentScreenName = MutableStateFlow("")
+    val currentScreenName: StateFlow<String> = _currentScreenName
+
     val indexUiState: StateFlow<IndexUiState> =
         combine(repository.getTopFiles(), repository.getRecentFiles()) { topFiles, recentFiles ->
             IndexUiState(topFiles, recentFiles)
@@ -41,9 +44,21 @@ class IndexViewModel(private val repository: FileRepository) : ViewModel() {
         }
     }
 
-    fun setSelectedIdentityFile(identityFile: IdentityFile) {
+    fun deleteFile(identityFile: IdentityFile) {
+        viewModelScope.launch {
+            repository.deleteFile(identityFile)
+        }
+    }
+
+    fun setSelectedIdentityFile(identityFile: IdentityFile?) {
         viewModelScope.launch {
             _selectedIdentityFile.emit(identityFile)
+        }
+    }
+
+    fun setCurrentScreenName(screenName: String) {
+        viewModelScope.launch {
+            _currentScreenName.emit(screenName)
         }
     }
 
