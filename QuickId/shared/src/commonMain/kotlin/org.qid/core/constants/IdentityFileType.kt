@@ -31,7 +31,11 @@ enum class IdentityFileType(val value: Int) {
             return "Insurance"
         }
     },
-    OTHER(7);
+    OTHER(7) {
+        override fun toString(): String {
+            return "Other"
+        }
+    };
 
     companion object {
         fun fromInt(value: Int): IdentityFileType {

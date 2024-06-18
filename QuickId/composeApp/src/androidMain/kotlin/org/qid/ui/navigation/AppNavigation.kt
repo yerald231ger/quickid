@@ -41,12 +41,14 @@ import org.koin.compose.KoinContext
 import org.koin.compose.koinInject
 import org.qid.BottomBarItem
 import org.qid.ui.components.AddIdentityFileDialog
+import org.qid.ui.components.EditIdentityFileDialog
 import org.qid.ui.icons.Inventory2
 import org.qid.ui.screen.HomeScreen
 import org.qid.ui.screen.IdentityFilesScreen
 import org.qid.ui.screen.SearchScreen
 import org.qid.ui.screen.SettingsScreen
 import org.qid.ui.theme.QuickIdThemes
+import org.qid.viewModels.EditIdentityFileViewModel
 import org.qid.viewModels.IndexViewModel
 
 @Composable
@@ -101,12 +103,13 @@ fun AppNavigation() {
                 val scope = rememberCoroutineScope()
                 val navController = rememberNavController()
                 val mainViewModel = koinViewModel<IndexViewModel>()
+                val editIdentityFileViewModel = koinViewModel<EditIdentityFileViewModel>()
                 val snackBarHostState = remember { SnackbarHostState() }
                 var showAddIdentityFileDialog by remember { mutableStateOf(false) }
+                var showEditIdentityFileDialog by remember { mutableStateOf(false) }
                 var isFileSelected by remember { mutableStateOf(false) }
                 var titleTopBar by remember { mutableStateOf("Quick Id") }
                 val context = koinInject<Application>()
-                var filesdir = context.filesDir
                 mainViewModel.selectedIdentityFile.collectAsState().value.let {
                     isFileSelected = it != null
                 }
@@ -169,6 +172,10 @@ fun AppNavigation() {
 
                                                         isFileSelected = false
                                                     }
+
+                                                if (bottomBarItem.route == "Edit")
+                                                    showEditIdentityFileDialog = true
+
                                             }) {
                                                 Icon(
                                                     bottomBarItem.selectedIcon,
@@ -221,6 +228,20 @@ fun AppNavigation() {
                             SearchScreen(navController)
                         }
                     }
+                }
+
+                if (showEditIdentityFileDialog) {
+                    EditIdentityFileDialog(
+                        mainViewModel.selectedIdentityFile.value!!,
+                        viewModel = editIdentityFileViewModel,
+                        onDismissRequest = {
+                            showEditIdentityFileDialog = false
+                        },
+                        onEditedIdentityFile = {
+                            mainViewModel.saveFile(it)
+                            showEditIdentityFileDialog = false
+                        }
+                    )
                 }
 
                 if (showAddIdentityFileDialog)
