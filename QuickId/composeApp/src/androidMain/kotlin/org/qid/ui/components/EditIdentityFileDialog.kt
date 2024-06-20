@@ -1,15 +1,20 @@
 package org.qid.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -44,6 +49,7 @@ fun EditIdentityFileDialog(
 
     val identityFileTypes = IdentityFileType.entries
     val importanceValues = listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+    var importanceSelected by remember { mutableStateOf(identityFile.importance.toString()) }
     var expandedImportance by remember { mutableStateOf(false) }
     var expandedType by remember { mutableStateOf(false) }
 
@@ -116,42 +122,39 @@ fun EditIdentityFileDialog(
                     }
                 )
 
-//                OutlinedTextField(
-//                    identityFile.importance.toString(),
-//                    onValueChange = {},
-//                    label = { Text("Importance") },
-//                    readOnly = true,
-//                    trailingIcon = {
-//                        Box {
-//                            IconButton(onClick = { expandedImportance = true }) {
-//                                Icon(
-//                                    Icons.Default.ArrowDropDown,
-//                                    contentDescription = "Localized description"
-//                                )
-//                            }
-//                            DropdownMenu(
-//                                expanded = expandedImportance,
-//                                onDismissRequest = { expandedImportance = false }
-//                            ) {
-//                                importanceValues.forEach {
-//                                    DropdownMenuItem(
-//                                        text = { Text(it.toString()) },
-//                                        onClick = {
-//                                            selectedImportance = it
-//                                            expandedImportance = false
-//                                        })
-//                                }
-//                            }
-//                        }
-//                    },
-//                    supportingText = {
-//                        if (fileName.isEmpty())
-//                            Text("Type a valid file name")
-//                    },
-//                    isError = state.importanceError != null,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                )
+                OutlinedTextField(
+                    importanceSelected,
+                    onValueChange = {
+                    },
+                    label = { Text("Importance") },
+                    readOnly = true,
+                    trailingIcon = {
+                        Box {
+                            IconButton(onClick = { expandedImportance = true }) {
+                                Icon(
+                                    Icons.Default.ArrowDropDown,
+                                    contentDescription = "Localized description"
+                                )
+                            }
+                            DropdownMenu(
+                                expanded = expandedImportance,
+                                onDismissRequest = { expandedImportance = false }
+                            ) {
+                                importanceValues.forEach {
+                                    DropdownMenuItem(
+                                        text = { Text(it.toString()) },
+                                        onClick = {
+                                            importanceSelected = it.toString()
+                                            expandedImportance = false
+                                        })
+                                }
+                            }
+                        }
+                    },
+                    isError = state.importanceError != null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
 //                OutlinedTextField(
 //                    value = identityFile.identityFileType.toString(),
 //                    onValueChange = {
