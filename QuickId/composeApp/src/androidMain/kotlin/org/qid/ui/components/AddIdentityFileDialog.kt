@@ -3,6 +3,7 @@ package org.qid.ui.components
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.net.Uri
+import android.os.Build
 import android.webkit.MimeTypeMap
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -11,6 +12,7 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.OpenDocument
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.activity.result.contract.ActivityResultContracts.StartIntentSenderForResult
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -60,6 +62,7 @@ import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Preview
 @Composable
 fun AddIdentityFileDialog(
@@ -75,6 +78,7 @@ fun AddIdentityFileDialog(
             .setResultFormats(RESULT_FORMAT_JPEG, RESULT_FORMAT_PDF)
             .build()
 
+    //Photo Picker
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         PickVisualMedia()
     ) {
@@ -86,13 +90,15 @@ fun AddIdentityFileDialog(
                 DateTimeFormatter.ofPattern("yyyyMMddHHmmss").format(LocalDateTime.now())
             val fileName = IdentityFile.createNameForImageFile(dateNowFormatted, fileExtension)
             val identityFile = IdentityFile.create(fileId, fileName)
-
-            val fileOutputStream = File(
+            val file = File(
                 context.filesDir,
                 identityFile.name
-            ).outputStream()
+            )
+            val fileOutputStream = file.outputStream()
             it.let {
                 context.contentResolver.openInputStream(it).use { inputStream ->
+                    identityFile.size = inputStream?.available() ?: 0
+                    identityFile.path = file.path
                     inputStream?.copyTo(fileOutputStream)
                     onNewIdentityFile(identityFile)
                 }
@@ -100,6 +106,7 @@ fun AddIdentityFileDialog(
         }
     }
 
+    //Document Picker
     val singleFilePickerLauncher = rememberLauncherForActivityResult(
         OpenDocument()
     ) {
@@ -113,12 +120,15 @@ fun AddIdentityFileDialog(
             val fileName = IdentityFile.createNameForDocumentFile(dateNowFormatted, fileExtension)
             val identityFile = IdentityFile.create(fileId, fileName)
 
-            val fileOutputStream = File(
+            val file = File(
                 context.filesDir,
                 identityFile.name
-            ).outputStream()
+            )
+            val fileOutputStream = file.outputStream()
             it.let { it1 ->
                 context.contentResolver.openInputStream(it1)?.use { inputStream ->
+                    identityFile.size = inputStream.available()
+                    identityFile.path = file.path
                     inputStream.copyTo(fileOutputStream)
                     onNewIdentityFile(identityFile)
                 }
@@ -126,6 +136,7 @@ fun AddIdentityFileDialog(
         }
     }
 
+    //Scanner
     val scanner = GmsDocumentScanning.getClient(options)
     var scannedDocumentUri by remember { mutableStateOf<List<Uri>>(emptyList()) }
     val scanDocumentLauncher =
@@ -142,13 +153,15 @@ fun AddIdentityFileDialog(
                     val fileName =
                         IdentityFile.createNameForScannedFile(dateNowFormatted, fileExtension)
                     val identityFile = IdentityFile.create(fileId, fileName)
-
-                    val fileOutputStream = File(
+                    val file = File(
                         context.filesDir,
                         identityFile.name
-                    ).outputStream()
-                    context.contentResolver.openInputStream(pdf.uri).use {
-                        it?.copyTo(fileOutputStream)
+                    )
+                    val fileOutputStream = file.outputStream()
+                    context.contentResolver.openInputStream(pdf.uri).use { inputStream ->
+                        identityFile.size = inputStream?.available() ?: 0
+                        identityFile.path = file.path
+                        inputStream?.copyTo(fileOutputStream)
                         onNewIdentityFile(identityFile)
                     }
                 }

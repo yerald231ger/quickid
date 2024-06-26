@@ -10,8 +10,9 @@ fun IdentityFile.toEntityFile(): EntityFile {
         name = this.name,
         description = this.description,
         importance = this.importance,
-        identityFileType = this.identityFileType.ordinal,
-        path = this.path
+        identityFileType = this.identityFileType.value,
+        path = this.path,
+        size = this.size
     )
 }
 
@@ -21,6 +22,7 @@ fun EntityFile.toIdentityFile(): IdentityFile {
         identityFile.importance = this.importance
         identityFile.identityFileType = IdentityFileType.fromInt(this.identityFileType)
         identityFile.path = this.path
+        identityFile.size = this.size
         return identityFile
     }
 }

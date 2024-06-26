@@ -17,13 +17,13 @@ class IdentityFile private constructor(
     var description: String = ""
     var importance: Int = 0
     var identityFileType: IdentityFileType = IdentityFileType.ID
-    var size: Array<Byte> = emptyArray()
+    var size: Int = 0
     var tags: List<String> = emptyList()
     var path: String = ""
     var fileExtension: String = ""
 
     override fun toString(): String {
-        return "IdentityFile(id=$id, name='$name', description='$description', importance=$importance, identityFileType=$identityFileType, size=${size.contentToString()}, tags=${tags.size}, path='$path')"
+        return "IdentityFile(id=$id, name='$name', description='$description', importance=$importance, identityFileType=$identityFileType, size=${size}, tags=${tags.size}, path='$path')"
     }
 
     companion object {

@@ -44,6 +44,12 @@ class IndexViewModel(private val repository: FileRepository) : ViewModel() {
         }
     }
 
+    fun updateFile(identityFile: IdentityFile) {
+        viewModelScope.launch {
+            repository.updateFile(identityFile)
+        }
+    }
+
     fun deleteFile(identityFile: IdentityFile) {
         viewModelScope.launch {
             repository.deleteFile(identityFile)

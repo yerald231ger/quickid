@@ -50,6 +50,7 @@ fun EditIdentityFileDialog(
     val identityFileTypes = IdentityFileType.entries
     val importanceValues = listOf(0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
     var importanceSelected by remember { mutableStateOf(identityFile.importance.toString()) }
+    var identityFileTypesSelected by remember { mutableStateOf(identityFile.identityFileType.toString()) }
     var expandedImportance by remember { mutableStateOf(false) }
     var expandedType by remember { mutableStateOf(false) }
 
@@ -155,44 +156,40 @@ fun EditIdentityFileDialog(
                     modifier = Modifier
                         .fillMaxWidth()
                 )
-//                OutlinedTextField(
-//                    value = identityFile.identityFileType.toString(),
-//                    onValueChange = {
-//
-//                    },
-//                    label = { Text("Type") },
-//                    readOnly = true,
-//                    trailingIcon = {
-//                        Box {
-//                            IconButton(onClick = { expandedType = true }) {
-//                                Icon(
-//                                    Icons.Default.ArrowDropDown,
-//                                    contentDescription = "Localized description"
-//                                )
-//                            }
-//                            DropdownMenu(
-//                                expanded = expandedType,
-//                                onDismissRequest = { expandedType = false }
-//                            ) {
-//                                identityFileTypes.forEach {
-//                                    DropdownMenuItem(
-//                                        text = { Text(it.toString()) },
-//                                        onClick = {
-//                                            selectedIdentityFileType = it.toString()
-//                                            expandedType = false
-//                                        })
-//                                }
-//                            }
-//                        }
-//                    },
-//                    supportingText = {
-//                        if (fileName.isEmpty())
-//                            Text("Type a valid file name")
-//                    },
-//                    isError = state.typeError != null,
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                )
+                OutlinedTextField(
+                    value = identityFileTypesSelected,
+                    onValueChange = {
+
+                    },
+                    label = { Text("Type") },
+                    readOnly = true,
+                    trailingIcon = {
+                        Box {
+                            IconButton(onClick = { expandedType = true }) {
+                                Icon(
+                                    Icons.Default.ArrowDropDown,
+                                    contentDescription = "Localized description"
+                                )
+                            }
+                            DropdownMenu(
+                                expanded = expandedType,
+                                onDismissRequest = { expandedType = false }
+                            ) {
+                                identityFileTypes.forEach {
+                                    DropdownMenuItem(
+                                        text = { Text(it.toString()) },
+                                        onClick = {
+                                            identityFileTypesSelected = it.toString()
+                                            expandedType = false
+                                        })
+                                }
+                            }
+                        }
+                    },
+                    isError = state.typeError != null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                )
                 Row(
                     modifier = Modifier
                         .fillMaxWidth(),
@@ -206,6 +203,10 @@ fun EditIdentityFileDialog(
                     }
                     Button(
                         onClick = {
+                            identityFile.name = state.name
+                            identityFile.description = state.description
+                            identityFile.identityFileType = IdentityFileType.fromString(identityFileTypesSelected)
+                            identityFile.importance = importanceSelected.toInt()
                             onEditedIdentityFile(identityFile)
                         },
                         enabled = state.isModelValid,

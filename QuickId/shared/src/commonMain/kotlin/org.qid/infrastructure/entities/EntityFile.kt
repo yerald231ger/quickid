@@ -1,5 +1,6 @@
 package org.qid.infrastructure.entities
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.serialization.SerialName
@@ -23,8 +24,13 @@ data class EntityFile(
     val importance: Int,
 
     @SerialName("identity_file_type")
+    @ColumnInfo(name = "identity_file_type")
     val identityFileType: Int,
 
     @SerialName("path")
-    val path: String
+    val path: String,
+
+    @SerialName("size")
+    @ColumnInfo(defaultValue = "0")
+    val size: Int
 )

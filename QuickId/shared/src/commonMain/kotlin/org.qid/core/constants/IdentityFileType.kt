@@ -41,5 +41,17 @@ enum class IdentityFileType(val value: Int) {
         fun fromInt(value: Int): IdentityFileType {
             return entries.first { it.value == value }
         }
+
+        fun fromString(value: String): IdentityFileType {
+            return when (value) {
+                "Passport" -> PASSPORT
+                "Id" -> ID
+                "License" -> DRIVER_LICENSE
+                "Contract" -> CONTRACT
+                "Ssn" -> SOCIAL_SECURITY
+                "Insurance" -> CAR_INSURANCE
+                else -> OTHER
+            }
+        }
     }
 }

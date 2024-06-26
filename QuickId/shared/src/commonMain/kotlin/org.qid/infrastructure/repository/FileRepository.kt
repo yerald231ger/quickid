@@ -57,7 +57,7 @@ class QuickIdFileRepository(
     }
 
     override suspend fun updateFile(identityFile: IdentityFile) {
-        TODO("Not yet implemented")
+        return database.fileDao().update(identityFile.toEntityFile())
     }
 
 }

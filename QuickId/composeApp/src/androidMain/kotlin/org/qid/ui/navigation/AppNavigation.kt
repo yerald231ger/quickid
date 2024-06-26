@@ -238,7 +238,7 @@ fun AppNavigation() {
                             showEditIdentityFileDialog = false
                         },
                         onEditedIdentityFile = {
-                            mainViewModel.saveFile(it)
+                            mainViewModel.updateFile(it)
                             showEditIdentityFileDialog = false
                         }
                     )

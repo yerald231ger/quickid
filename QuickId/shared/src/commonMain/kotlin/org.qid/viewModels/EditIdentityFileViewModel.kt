@@ -1,10 +1,8 @@
 package org.qid.viewModels
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 class EditIdentityFileViewModel(
     private val nameValidator: NameValidator,
@@ -24,15 +22,12 @@ class EditIdentityFileViewModel(
         ).any { !it.isValid }
 
 
-        if (hasErrors) {
+        if (!hasErrors) {
             _state.value = _state.value.copy(
                 nameError = nameValidationResult.errorMessage,
                 descriptionError = descriptionValidationResult.errorMessage,
                 isModelValid = true
             )
-            viewModelScope.launch {
-
-            }
         }
     }
 
